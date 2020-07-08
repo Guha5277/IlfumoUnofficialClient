@@ -8,4 +8,7 @@ public interface ModelListener {
     void onProductFound(Product product);
 
     void onImageDownload(int productID, Bitmap image);
+
+    void noImageForProduct(int productID);
+    //void noImageForProduct(int parseInt);
 }

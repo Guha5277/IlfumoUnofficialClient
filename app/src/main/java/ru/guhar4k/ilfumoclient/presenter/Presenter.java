@@ -43,4 +43,9 @@ public class Presenter implements ModelListener, ViewListener {
     public void onImageDownload(int productID, Bitmap image) {
         viewListener.onProductImageDownload(productID, image);
     }
+
+    @Override
+    public void noImageForProduct(int productID) {
+        viewListener.noImageForProduct(productID);
+    }
 }

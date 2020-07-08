@@ -44,6 +44,11 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         runOnUiThread(() -> productAdapter.addImage(productID, image));
     }
 
+    @Override
+    public void noImageForProduct(int productID) {
+        runOnUiThread(() -> productAdapter.noImageForProduct(productID));
+    }
+
     //Lifecycle
     @Override
     protected void onStart() {

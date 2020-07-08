@@ -1,5 +1,6 @@
 package ru.guhar4k.ilfumoclient.model;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -17,7 +18,7 @@ import ru.guhar4k.ilfumoclient.product.Product;
 
 public class Model implements PresenterListener.Model, SocketThreadListener {
     private ModelListener listener;
-    private String ip = "10.0.2.2";
+    private String ip = "109.111.178.130";
     private int port = 5277;
     private SocketThread socketThread;
     private ExecutorService threadPool;
@@ -116,6 +117,7 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
                             break;
                         case Library.NO_IMAGE:
                             //noImageForProduct(receivedData.getData());
+                            listener.noImageForProduct(Integer.parseInt(receivedData.getData()));
                             break;
                         case Library.FIRST_CHUNK:
                             imageDownloader.storeImageFirstChunk(receivedData.getData().split(Library.DELIMITER));
@@ -126,13 +128,15 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
                             break;
                         case Library.LAST_CHUNK:
                             String[] messageParts = receivedData.getData().split(Library.DELIMITER);
-                            Bitmap bmp = imageDownloader.storeImageLastChunk(messageParts);
+                            Bitmap image = imageDownloader.storeImageLastChunk(messageParts);
                             int productID = Integer.parseInt(messageParts[0]);
+                            listener.onImageDownload(productID, image);
                             break;
                         case Library.FULL:
                             String[] messageParts2 = receivedData.getData().split(Library.DELIMITER);
-                            Bitmap bmp2 = imageDownloader.storeFullImage(messageParts2);
+                            Bitmap image2 = imageDownloader.storeFullImage(messageParts2);
                             int productID2 = Integer.parseInt(messageParts2[0]);
+                            listener.onImageDownload(productID2, image2);
                             break;
                     }
                 }

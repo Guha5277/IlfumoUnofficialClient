@@ -17,5 +17,7 @@ public interface PresenterListener {
         void onProductFound(Product product);
 
         void onProductImageDownload(int productID, Bitmap image);
+
+        void noImageForProduct(int productID);
     }
 }
