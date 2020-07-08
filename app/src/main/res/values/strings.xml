@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">IlfumoClient</string>
+    <string name="product_item_descr">Product item image</string>
+    <string name="product_item_name">Жидкость Freaky Squeezy Fresh and Sweet Salaad</string>
+    <string name="product_item_price">490 р.</string>
+    <string name="product_item_volume_header">Объем:</string>
+    <string name="product_item_volume">120 мл</string>
+    <string name="product_item_strength_header">Крепость:</string>
+    <string name="product_item_strength">3 мг/мл</string>
+</resources>
