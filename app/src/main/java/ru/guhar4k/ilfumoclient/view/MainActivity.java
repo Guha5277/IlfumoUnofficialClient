@@ -2,6 +2,7 @@ package ru.guhar4k.ilfumoclient.view;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +24,20 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initRecycler();
+
+        //TODO list end detection
+        productListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    Toast.makeText(MainActivity.this, "Last", Toast.LENGTH_LONG).show();
+
+                }
+            }
+        });
+
         listener = new Presenter(this);
     }
 
