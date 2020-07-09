@@ -68,10 +68,11 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
     private void sendNewProductRequest() {
         String msg = "{\n" +
                 "  \"header\": [\n" +
-                "    30\n" +
+                "    30,\n" +
+                "    45\n" +
                 "  ],\n" +
                 "  \"dataLength\": 176,\n" +
-                "  \"data\": \"{\\n  \\\"stock\\\": false,\\n  \\\"regionID\\\": -1,\\n  \\\"storeID\\\": -1,\\n  \\\"strengthStart\\\": -1,\\n  \\\"strengthEnd\\\": -1,\\n  \\\"volumeStart\\\": -1,\\n  \\\"volumeEnd\\\": -1,\\n  \\\"priceStart\\\": 0,\\n  \\\"priceEnd\\\": -1\\n}\"\n" +
+                "  \"data\": \"{\\n  \\\"stock\\\": true,\\n  \\\"regionID\\\": -1,\\n  \\\"storeID\\\": -1,\\n  \\\"strengthStart\\\": -1,\\n  \\\"strengthEnd\\\": -1,\\n  \\\"volumeStart\\\": -1,\\n  \\\"volumeEnd\\\": -1,\\n  \\\"priceStart\\\": -1,\\n  \\\"priceEnd\\\": -1\\n}\"\n" +
                 "} ";
         socketThread.sendMessage(msg);
     }
