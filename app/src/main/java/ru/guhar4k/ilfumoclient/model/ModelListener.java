@@ -10,5 +10,7 @@ public interface ModelListener {
     void onImageDownload(int productID, Bitmap image);
 
     void noImageForProduct(int productID);
+
+    void availableProductsUpdate(boolean hasNextPage);
     //void noImageForProduct(int parseInt);
 }

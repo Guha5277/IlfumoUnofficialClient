@@ -1,6 +1,5 @@
 package ru.guhar4k.ilfumoclient.model;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -47,7 +46,16 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
 
     }
 
-    void connect() {
+    @Override
+    public void getMoreProducts() {
+        threadPool.execute(this::sendProductRequest);
+    }
+
+    private void sendProductRequest() {
+        socketThread.sendMessage(msgOf(header(Library.PRODUCT_REQUEST, Library.NEXT)));
+    }
+
+    private void connect() {
         try {
             Socket socket = new Socket(ip, port);
             socketThread = new SocketThread(this, "client", socket);
@@ -57,7 +65,7 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
         }
     }
 
-    void sendProductRequest() {
+    private void sendNewProductRequest() {
         String msg = "{\n" +
                 "  \"header\": [\n" +
                 "    30\n" +
@@ -79,7 +87,7 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
 
     @Override
     public void onSocketReady(SocketThread thread, Socket socket) {
-        sendProductRequest();
+        sendNewProductRequest();
     }
 
     @Override
@@ -108,6 +116,10 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
                 Product product = Library.productFromJson(receivedData.getData());
                 listener.onProductFound(product);
                 getImage(product.getId());
+                break;
+            case Library.PRODUCT_LIST_END:
+                boolean hasNextPage = Boolean.valueOf(receivedData.getData());
+                listener.availableProductsUpdate(hasNextPage);
                 break;
             case Library.IMAGE:
                 if (header.length > 1) {

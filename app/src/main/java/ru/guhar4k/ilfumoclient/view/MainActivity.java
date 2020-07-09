@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
     private boolean isMainPageLoaded;
     private RecyclerView productListView;
     private ProductAdapter productAdapter;
-    private boolean isListScrolledToTheEnd;
-    private boolean isFullListOfProductStored;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
                 if (!recyclerView.canScrollVertically(1)) {
                     handleListScrolled();
                 }
@@ -43,9 +40,7 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
     }
 
     private void handleListScrolled() {
-        if (isFullListOfProductStored || isListScrolledToTheEnd) return;
-        isListScrolledToTheEnd = true;
-        //TODO request to the next page of products
+        listener.getMoreProducts();
     }
 
     private void initRecycler(){

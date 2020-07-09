@@ -12,11 +12,15 @@ public class Presenter implements ModelListener, ViewListener {
     PresenterListener.View viewListener;
     PresenterListener.Model modelListener;
 
+    private boolean isAllProductsLoaded;
+    private boolean readyToGetProduct;
+
     public Presenter(PresenterListener.View listener) {
         viewListener = listener;
         modelListener = new Model(this);
     }
 
+    //UI evetns
     @Override
     public void onAppReady() {
         modelListener.onUIReady();
@@ -32,6 +36,19 @@ public class Presenter implements ModelListener, ViewListener {
         modelListener.onAppPaused();
     }
 
+    @Override
+    public void getMoreProducts() {
+        if (isAllProductsLoaded || readyToGetProduct){
+            readyToGetProduct = false;
+            modelListener.getMoreProducts();
+        }
+    }
+
+    @Override
+    public void availableProductsUpdate(boolean hasNextPage) {
+        isAllProductsLoaded = !hasNextPage;
+        readyToGetProduct = true;
+    }
 
     //Model events
     @Override

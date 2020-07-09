@@ -11,6 +11,8 @@ public interface PresenterListener {
         void onAppClosed();
 
         void onAppPaused();
+
+        void getMoreProducts();
     }
 
     interface View {
