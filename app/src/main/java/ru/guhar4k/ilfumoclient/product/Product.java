@@ -16,7 +16,6 @@ public class Product {
     private double strength;
     private List<Warehouse> remains;
     private String imageID;
-    private Bitmap image;
 
     public Product(String name, String URL, int price) {
         this.name = name;
@@ -46,14 +45,6 @@ public class Product {
         this.categoryID = categoryID;
         this.volume = volume;
         this.strength = strength;
-    }
-
-    public Bitmap getImage() {
-        return image;
-    }
-
-    public void setImage(Bitmap image) {
-        this.image = image;
     }
 
     public String getName() {

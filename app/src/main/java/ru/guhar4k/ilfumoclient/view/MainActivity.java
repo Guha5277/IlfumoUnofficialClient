@@ -2,7 +2,6 @@ package ru.guhar4k.ilfumoclient.view;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,7 +14,7 @@ import ru.guhar4k.ilfumoclient.product.Product;
 
 public class MainActivity extends AppCompatActivity implements PresenterListener.View {
     private ViewListener listener;
-    private boolean isMainPageLoaded;
+//    private boolean isMainPageLoaded;
     private RecyclerView productListView;
     private ProductAdapter productAdapter;
 

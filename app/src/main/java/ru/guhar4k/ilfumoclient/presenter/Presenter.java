@@ -38,14 +38,14 @@ public class Presenter implements ModelListener, ViewListener {
 
     @Override
     public void getMoreProducts() {
-        if (isAllProductsLoaded || readyToGetProduct){
+        if (readyToGetProduct && !isAllProductsLoaded){
             readyToGetProduct = false;
             modelListener.getMoreProducts();
         }
     }
 
     @Override
-    public void availableProductsUpdate(boolean hasNextPage) {
+    public void availableProducts(boolean hasNextPage) {
         isAllProductsLoaded = !hasNextPage;
         readyToGetProduct = true;
     }

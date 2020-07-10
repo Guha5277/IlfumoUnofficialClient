@@ -11,6 +11,6 @@ public interface ModelListener {
 
     void noImageForProduct(int productID);
 
-    void availableProductsUpdate(boolean hasNextPage);
+    void availableProducts(boolean hasNextPage);
     //void noImageForProduct(int parseInt);
 }
