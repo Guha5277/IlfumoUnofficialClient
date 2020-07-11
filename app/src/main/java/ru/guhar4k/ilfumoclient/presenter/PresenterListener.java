@@ -21,5 +21,7 @@ public interface PresenterListener {
         void onProductImageDownload(int productID, Bitmap image);
 
         void noImageForProduct(int productID);
+
+        void onWarehousesInfoReceived();
     }
 }

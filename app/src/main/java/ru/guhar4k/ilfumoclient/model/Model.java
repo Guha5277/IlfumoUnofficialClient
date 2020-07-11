@@ -65,6 +65,10 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
         }
     }
 
+    private void getServerInfo(){
+        socketThread.sendMessage(msgOf(header(Library.SERVER_INFO)));
+    }
+
     private void sendNewProductRequest() {
         String msg = "{\n" +
                 "  \"header\": [\n" +
@@ -88,6 +92,7 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
 
     @Override
     public void onSocketReady(SocketThread thread, Socket socket) {
+        getServerInfo();
         sendNewProductRequest();
     }
 
@@ -111,6 +116,14 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
                     Log.w(LOG_TAG, "No products found by user request");
                     //listener.onProductsNotFound();
                 }
+                break;
+            case Library.WAREHOUSE_LIST:
+                listener.warehouseReceived(Library.warehouseFromJson(receivedData.getData()));
+                break;
+
+            case Library.WAREHOUSE_LIST_END:
+                listener.warehouseListEnd();
+
                 break;
             case Library.PRODUCT_LIST:
                 //products.add(Library.productFromJson(receivedData.getData()));
