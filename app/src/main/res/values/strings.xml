@@ -7,4 +7,9 @@
     <string name="product_item_volume">120 мл</string>
     <string name="product_item_strength_header">Крепость:</string>
     <string name="product_item_strength">3 мг/мл</string>
+    <string name="ic_filter_button">3 мг/мл</string>
+    <string name="range_start">от</string>
+    <string name="range_end">до</string>
+    <string name="price_label">Цена:</string>
+    <string name="filter_button_show">Показать</string>
 </resources>

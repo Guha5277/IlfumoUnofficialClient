@@ -2,7 +2,12 @@ package ru.guhar4k.ilfumoclient.view;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +27,15 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageButton filterButton = findViewById(R.id.ib_filter);
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFilterDialog();
+            }
+        });
+
         initRecycler();
 
         //TODO list end detection
@@ -36,6 +50,16 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         });
 
         listener = new Presenter(this);
+    }
+
+    private void showFilterDialog(){
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        View my_custom_view = getLayoutInflater().inflate(R.layout.filter_dialog, null); //находим разметку
+        adb.setView(my_custom_view); //ставим ее в окно
+        //TextView ad_tv = my_custom_view.findViewById(R.id.tv_test); //находим TextView
+        //ad_tv.setTextColor(Color.BLACK);
+        AlertDialog ad = adb.create();
+        ad.show();
     }
 
     private void handleListScrolled() {
