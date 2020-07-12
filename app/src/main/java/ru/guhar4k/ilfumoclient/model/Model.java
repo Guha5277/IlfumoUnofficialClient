@@ -85,7 +85,7 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
                 "    45\n" +
                 "  ],\n" +
                 "  \"dataLength\": 176,\n" +
-                "  \"data\": \"{\\n  \\\"stock\\\": true,\\n  \\\"regionID\\\": -1,\\n  \\\"storeID\\\": -1,\\n  \\\"strengthStart\\\": 6,\\n  \\\"strengthEnd\\\": 6,\\n  \\\"volumeStart\\\": -1,\\n  \\\"volumeEnd\\\": -1,\\n  \\\"priceStart\\\": -1,\\n  \\\"priceEnd\\\": -1\\n}\"\n" +
+                "  \"data\": \"{\\n  \\\"stock\\\": true,\\n  \\\"regionID\\\": -1,\\n  \\\"storeID\\\": -1,\\n  \\\"strengthStart\\\": -1,\\n  \\\"strengthEnd\\\": -1,\\n  \\\"volumeStart\\\": -1,\\n  \\\"volumeEnd\\\": -1,\\n  \\\"priceStart\\\": -1,\\n  \\\"priceEnd\\\": -1\\n}\"\n" +
                 "} ";
         socketThread.sendMessage(msg);
     }
