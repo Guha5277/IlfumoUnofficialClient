@@ -55,7 +55,9 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
 
     @Override
     public void newProductRequest(int city, int store, int volumeStart, int volumeEnd, int strengthStart, int strengthEnd, int priceStart, int priceEnd) {
-        sendMessage(Library.productRequestToJson(new ProductRequest(true, city, store, strengthStart, strengthEnd, volumeStart, volumeEnd, priceStart, priceEnd)));
+        threadPool.execute(() -> {
+            sendMessage(Library.productRequestToJson(new ProductRequest(true, city, store, strengthStart, strengthEnd, volumeStart, volumeEnd, priceStart, priceEnd)));
+        });
     }
 
     private void sendProductRequest() {
