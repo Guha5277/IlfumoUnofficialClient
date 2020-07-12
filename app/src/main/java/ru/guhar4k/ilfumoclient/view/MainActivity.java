@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
 
         button.setOnClickListener(view -> {
             String city = spinnerCity.getSelectedItem().toString();
-            String store = spinnerStore.getSelectedItem().toString();
+            Object storeSelected = spinnerStore.getSelectedItem();
+            String store = storeSelected == null ?null : spinnerStore.getSelectedItem().toString();
             String txtStrengthStart = etStrengthStart.getText().toString();
             String txtStrengthEnd = etStrengthEnd.getText().toString();
             String txtVolumeStart = etVolumeStart.getText().toString();
