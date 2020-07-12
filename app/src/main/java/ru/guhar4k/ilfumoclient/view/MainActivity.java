@@ -2,12 +2,12 @@ package ru.guhar4k.ilfumoclient.view;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +20,7 @@ import ru.guhar4k.ilfumoclient.presenter.PresenterListener;
 import ru.guhar4k.ilfumoclient.product.Product;
 
 public class MainActivity extends AppCompatActivity implements PresenterListener.View, View.OnClickListener {
+    private static final String LOGTAG = "MainActivity";
     private ViewListener listener;
 //    private boolean isMainPageLoaded;
     private RecyclerView productListView;
@@ -52,16 +53,31 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         listener = new Presenter(this);
     }
 
-    private void initFilter(){
+    private void initFilterDialog(){
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         View my_custom_view = getLayoutInflater().inflate(R.layout.filter_dialog, null); //находим разметку
         adb.setView(my_custom_view); //ставим ее в окно
         Spinner spinnerCity = my_custom_view.findViewById(R.id.spinner_city);
+        Spinner spinnerStore = my_custom_view.findViewById(R.id.spinner_store);
 
         ArrayAdapter<String> adapterCities = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listener.getCitiesList());
+        WarehousesAdapter storesAdapter = new WarehousesAdapter(this, android.R.layout.simple_spinner_item, (WarehousesProvider) listener, spinnerStore);
+
         adapterCities.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        storesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerCity.setAdapter(adapterCities);
+        spinnerStore.setAdapter(storesAdapter);
+
+        spinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                storesAdapter.onParentAdapterChanged(parent.getItemAtPosition(position).toString());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         //TextView ad_tv = my_custom_view.findViewById(R.id.tv_test); //находим TextView
         //ad_tv.setTextColor(Color.BLACK);
@@ -112,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
 
     @Override
     public void onWarehousesInfoReceived() {
-        runOnUiThread(this::initFilter);
+        runOnUiThread(this::initFilterDialog);
     }
 
     //Lifecycle

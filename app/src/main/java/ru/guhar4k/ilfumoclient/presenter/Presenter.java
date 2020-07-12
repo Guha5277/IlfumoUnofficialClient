@@ -13,8 +13,10 @@ import ru.guhar4k.ilfumoclient.model.ModelListener;
 import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
 import ru.guhar4k.ilfumoclient.view.ViewListener;
+import ru.guhar4k.ilfumoclient.view.WarehousesAdapter;
+import ru.guhar4k.ilfumoclient.view.WarehousesProvider;
 
-public class Presenter implements ModelListener, ViewListener {
+public class Presenter implements ModelListener, ViewListener, WarehousesProvider {
     private static final String LOG_TAG = "Presenter";
     PresenterListener.View viewListener;
     PresenterListener.Model modelListener;
@@ -119,5 +121,12 @@ public class Presenter implements ModelListener, ViewListener {
         }
 
         viewListener.onWarehousesInfoReceived();
+    }
+
+    //WarehousesProvider events
+
+    @Override
+    public List<String> getWarehouses(String selectedItem) {
+        return citiesAndStores.get(selectedItem);
     }
 }
