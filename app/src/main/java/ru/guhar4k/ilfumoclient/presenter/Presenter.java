@@ -67,6 +67,30 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
         return cities;
     }
 
+    @Override
+    public void onApplyProductFilter(String city, String store, int volumeStart, int volumeEnd, int strengthStart, int strengthEnd, int priceStart, int priceEnd) {
+        int regionID = -1;
+        int storeID = -1;
+
+        if (city != null) {
+            for (Warehouse w : warehouses) {
+                if (w.getCity().equals(city)) {
+                    regionID = w.getRegion();
+                    break;
+                }
+            }
+        }
+        if (store != null) {
+            for (Warehouse w : warehouses) {
+                if (w.getAddress().equals(store)) {
+                    storeID = w.getId();
+                    break;
+                }
+            }
+        }
+        modelListener.newProductRequest(regionID, storeID, volumeStart, volumeEnd, strengthStart, strengthEnd, priceStart, priceEnd);
+    }
+
     //Model events
     @Override
     public void onProductFound(Product product) {

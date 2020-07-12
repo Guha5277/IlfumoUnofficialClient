@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 
 import ru.guhar4k.ilfumoclient.common.DataProtocol;
 import ru.guhar4k.ilfumoclient.common.Library;
+import ru.guhar4k.ilfumoclient.common.ProductRequest;
 import ru.guhar4k.ilfumoclient.network.SocketThread;
 import ru.guhar4k.ilfumoclient.network.SocketThreadListener;
 import ru.guhar4k.ilfumoclient.presenter.PresenterListener;
@@ -30,6 +31,7 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
         threadPool = Executors.newFixedThreadPool(2, Thread::new);
     }
 
+    //Presenter events
     @Override
     public void onUIReady() {
         if (socketThread != null && socketThread.isAlive()) return;
@@ -49,6 +51,11 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
     @Override
     public void getMoreProducts() {
         threadPool.execute(this::sendProductRequest);
+    }
+
+    @Override
+    public void newProductRequest(int city, int store, int volumeStart, int volumeEnd, int strengthStart, int strengthEnd, int priceStart, int priceEnd) {
+        sendMessage(Library.productRequestToJson(new ProductRequest(true, city, store, strengthStart, strengthEnd, volumeStart, volumeEnd, priceStart, priceEnd)));
     }
 
     private void sendProductRequest() {

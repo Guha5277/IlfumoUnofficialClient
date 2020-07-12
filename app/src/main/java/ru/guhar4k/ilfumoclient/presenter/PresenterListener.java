@@ -13,6 +13,8 @@ public interface PresenterListener {
         void onAppPaused();
 
         void getMoreProducts();
+
+        void newProductRequest(int city, int store, int volumeStart, int volumeEnd, int strengthStart, int strengthEnd, int priceStart, int priceEnd);
     }
 
     interface View {

@@ -81,17 +81,34 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
             }
         });
 
-        EditText volumeStart = filterView.findViewById(R.id.et_volume_start);
-        EditText volumeEnd = filterView.findViewById(R.id.et_volume_end);
-        EditText strengthStart = filterView.findViewById(R.id.et_strength_start);
-        EditText strengthEnd = filterView.findViewById(R.id.et_strength_end);
-        EditText priceStart = filterView.findViewById(R.id.et_price_start);
-        EditText priceEnd = filterView.findViewById(R.id.et_price_end);
         Button button = filterView.findViewById(R.id.btn_filter_ok);
+        EditText etVolumeStart = filterView.findViewById(R.id.et_volume_start);
+        EditText etVolumeEnd = filterView.findViewById(R.id.et_volume_end);
+        EditText etStrengthStart = filterView.findViewById(R.id.et_strength_start);
+        EditText etStrengthEnd = filterView.findViewById(R.id.et_strength_end);
+        EditText etPriceStart = filterView.findViewById(R.id.et_price_start);
+        EditText etPriceEnd = filterView.findViewById(R.id.et_price_end);
 
         button.setOnClickListener(view -> {
+            String city = spinnerCity.getSelectedItem().toString();
+            String store = spinnerCity.getSelectedItem().toString();
+            String txtStrengthStart = etStrengthStart.getText().toString();
+            String txtStrengthEnd = etStrengthEnd.getText().toString();
+            String txtVolumeStart = etVolumeStart.getText().toString();
+            String txtVolumeEnd = etVolumeEnd.getText().toString();
+            String txtPriceStart = etPriceStart.getText().toString();
+            String txtPriceEnd = etPriceEnd.getText().toString();
+
+            int strengthStart = txtStrengthStart.equals("") ? -1 : Integer.parseInt(txtStrengthStart);
+            int strengthEnd = txtStrengthEnd.equals("") ? -1 : Integer.parseInt(txtStrengthEnd);
+            int volumeStart = txtVolumeStart.equals("") ? -1 : Integer.parseInt(txtVolumeStart);
+            int volumeEnd = txtVolumeEnd.equals("") ? -1 : Integer.parseInt(txtVolumeEnd);
+            int priceStart = txtPriceStart.equals("") ? -1 : Integer.parseInt(txtPriceStart);
+            int priceEnd = txtPriceEnd.equals("") ? -1 : Integer.parseInt(txtPriceEnd);
+
+            listener.onApplyProductFilter(city, store, volumeStart, volumeEnd, strengthStart, strengthEnd, priceStart, priceEnd);
+            productAdapter.clearItems();
             filterDialog.cancel();
-           Log.i(LOGTAG, volumeStart.getText().toString());
         });
 
         filterDialog = adb.create();

@@ -61,10 +61,10 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 //        notifyDataSetChanged();
 //    }
 //
-//    public void clearItems() {
-//        productList.clear();
-//        notifyDataSetChanged();
-//    }
+    public void clearItems() {
+        productItemList.clear();
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
