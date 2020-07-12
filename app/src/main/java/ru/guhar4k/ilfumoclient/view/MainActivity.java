@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
@@ -55,10 +57,10 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
 
     private void initFilterDialog(){
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
-        View my_custom_view = getLayoutInflater().inflate(R.layout.filter_dialog, null); //находим разметку
-        adb.setView(my_custom_view); //ставим ее в окно
-        Spinner spinnerCity = my_custom_view.findViewById(R.id.spinner_city);
-        Spinner spinnerStore = my_custom_view.findViewById(R.id.spinner_store);
+        View filterView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
+        adb.setView(filterView);
+        Spinner spinnerCity = filterView.findViewById(R.id.spinner_city);
+        Spinner spinnerStore = filterView.findViewById(R.id.spinner_store);
 
         ArrayAdapter<String> adapterCities = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listener.getCitiesList());
         WarehousesAdapter storesAdapter = new WarehousesAdapter(this, android.R.layout.simple_spinner_item, (WarehousesProvider) listener, spinnerStore);
@@ -79,10 +81,20 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
             }
         });
 
-        //TextView ad_tv = my_custom_view.findViewById(R.id.tv_test); //находим TextView
-        //ad_tv.setTextColor(Color.BLACK);
-        filterDialog = adb.create();
+        EditText volumeStart = filterView.findViewById(R.id.et_volume_start);
+        EditText volumeEnd = filterView.findViewById(R.id.et_volume_end);
+        EditText strengthStart = filterView.findViewById(R.id.et_strength_start);
+        EditText strengthEnd = filterView.findViewById(R.id.et_strength_end);
+        EditText priceStart = filterView.findViewById(R.id.et_price_start);
+        EditText priceEnd = filterView.findViewById(R.id.et_price_end);
+        Button button = filterView.findViewById(R.id.btn_filter_ok);
 
+        button.setOnClickListener(view -> {
+            filterDialog.cancel();
+           Log.i(LOGTAG, volumeStart.getText().toString());
+        });
+
+        filterDialog = adb.create();
         filterButton.setEnabled(true);
     }
 
