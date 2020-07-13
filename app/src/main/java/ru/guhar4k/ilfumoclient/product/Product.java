@@ -1,7 +1,5 @@
 package ru.guhar4k.ilfumoclient.product;
 
-import android.graphics.Bitmap;
-
 import java.util.ArrayList;
 import java.util.List;
 

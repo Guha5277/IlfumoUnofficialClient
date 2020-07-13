@@ -9,6 +9,6 @@ public interface ViewListener {
     void getMoreProducts();
     List<String> getCitiesList();
 
-    void onApplyProductFilter(String city, String store, int volumeStart, int volumeEnd, int strengthStart, int strengthEnd, int priceStart, int priceEnd);
+    void onApplyProductFilter(String city, String store, String volumeStart, String volumeEnd, String strengthStart, String strengthEnd, String priceStart, String priceEnd);
 //    List<String> getWarehousesList();
 }

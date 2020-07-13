@@ -13,7 +13,6 @@ import ru.guhar4k.ilfumoclient.model.ModelListener;
 import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
 import ru.guhar4k.ilfumoclient.view.ViewListener;
-import ru.guhar4k.ilfumoclient.view.WarehousesAdapter;
 import ru.guhar4k.ilfumoclient.view.WarehousesProvider;
 
 public class Presenter implements ModelListener, ViewListener, WarehousesProvider {
@@ -68,7 +67,14 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
     }
 
     @Override
-    public void onApplyProductFilter(String city, String store, int volumeStart, int volumeEnd, int strengthStart, int strengthEnd, int priceStart, int priceEnd) {
+    public void onApplyProductFilter(String city, String store, String volumeStart, String volumeEnd, String strengthStart, String strengthEnd, String priceStart, String priceEnd) {
+        int valStrengthStart = strengthStart.equals("") ? -1 : Integer.parseInt(strengthStart);
+        int valStrengthEnd = strengthEnd.equals("") ? -1 : Integer.parseInt(strengthEnd);
+        int valVolumeStart = volumeStart.equals("") ? -1 : Integer.parseInt(volumeStart);
+        int valVolumeEnd = volumeEnd.equals("") ? -1 : Integer.parseInt(volumeEnd);
+        int valPriceStart = priceStart.equals("") ? -1 : Integer.parseInt(priceStart);
+        int valPriceEnd = priceEnd.equals("") ? -1 : Integer.parseInt(priceEnd);
+
         int regionID = -1;
         int storeID = -1;
 
@@ -88,7 +94,7 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
                 }
             }
         }
-        modelListener.newProductRequest(regionID, storeID, volumeStart, volumeEnd, strengthStart, strengthEnd, priceStart, priceEnd);
+        modelListener.newProductRequest(regionID, storeID, valVolumeStart, valVolumeEnd, valStrengthStart, valStrengthEnd, valPriceStart, valPriceEnd);
     }
 
     //Model events

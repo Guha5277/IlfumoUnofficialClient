@@ -22,6 +22,11 @@ import ru.guhar4k.ilfumoclient.product.Product;
 class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     private static final String LOGTAG = "ProductAdapter";
     private List<ProductItem> productItemList = new ArrayList<>();
+    private OnClickListener listener;
+
+    ProductAdapter(OnClickListener listener){
+        this.listener = listener;
+    }
 
     public void addItem(Product product){
         productItemList.add(new ProductItem(product));
@@ -80,6 +85,11 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(position, productItemList.get(position));
+        holder.itemView.setOnClickListener(v -> {
+            if (productItemList != null) {
+                listener.onClick(productItemList.get(position));
+            }
+        });
     }
 
     @Override
@@ -121,46 +131,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
         }
     }
 
-    class ProductItem {
-        static final int NOT_LOAD = 0;
-        static final int HAS_IMAGE = 1;
-        static final int NO_IMAGE = 2;
-
-        final Product product;
-        int position;
-        int hasImage;
-        Bitmap image;
-
-        ProductItem(Product product){
-            this.product = product;
-        }
-
-        public int getPosition() {
-            return position;
-        }
-
-        public void setPosition(int position) {
-            this.position = position;
-        }
-
-        public Product getProduct() {
-            return product;
-        }
-
-        public int getImageStatus() {
-            return hasImage;
-        }
-
-        public Bitmap getImage() {
-            return image;
-        }
-
-        public void setImage(Bitmap image) {
-            this.image = image;
-        }
-
-        public void setImageStatus(int status) {
-            hasImage = status;
-        }
+    interface OnClickListener {
+        void onClick(ProductItem item);
     }
 }

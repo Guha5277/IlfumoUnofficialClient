@@ -1,5 +1,6 @@
 package ru.guhar4k.ilfumoclient.view;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,10 +22,10 @@ import ru.guhar4k.ilfumoclient.presenter.Presenter;
 import ru.guhar4k.ilfumoclient.presenter.PresenterListener;
 import ru.guhar4k.ilfumoclient.product.Product;
 
-public class MainActivity extends AppCompatActivity implements PresenterListener.View, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements PresenterListener.View, View.OnClickListener, ProductAdapter.OnClickListener {
     private static final String LOGTAG = "MainActivity";
     private ViewListener listener;
-//    private boolean isMainPageLoaded;
+    //    private boolean isMainPageLoaded;
     private RecyclerView productListView;
     private ProductAdapter productAdapter;
     private ImageButton filterButton;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         listener = new Presenter(this);
     }
 
-    private void initFilterDialog(){
+    private void initFilterDialog() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         View filterView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
         adb.setView(filterView);
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 storesAdapter.onParentAdapterChanged(parent.getItemAtPosition(position).toString());
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         button.setOnClickListener(view -> {
             String city = spinnerCity.getSelectedItem().toString();
             Object storeSelected = spinnerStore.getSelectedItem();
-            String store = storeSelected == null ?null : spinnerStore.getSelectedItem().toString();
+            String store = storeSelected == null ? null : spinnerStore.getSelectedItem().toString();
             String txtStrengthStart = etStrengthStart.getText().toString();
             String txtStrengthEnd = etStrengthEnd.getText().toString();
             String txtVolumeStart = etVolumeStart.getText().toString();
@@ -100,14 +102,7 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
             String txtPriceStart = etPriceStart.getText().toString();
             String txtPriceEnd = etPriceEnd.getText().toString();
 
-            int strengthStart = txtStrengthStart.equals("") ? -1 : Integer.parseInt(txtStrengthStart);
-            int strengthEnd = txtStrengthEnd.equals("") ? -1 : Integer.parseInt(txtStrengthEnd);
-            int volumeStart = txtVolumeStart.equals("") ? -1 : Integer.parseInt(txtVolumeStart);
-            int volumeEnd = txtVolumeEnd.equals("") ? -1 : Integer.parseInt(txtVolumeEnd);
-            int priceStart = txtPriceStart.equals("") ? -1 : Integer.parseInt(txtPriceStart);
-            int priceEnd = txtPriceEnd.equals("") ? -1 : Integer.parseInt(txtPriceEnd);
-
-            listener.onApplyProductFilter(city, store, volumeStart, volumeEnd, strengthStart, strengthEnd, priceStart, priceEnd);
+            listener.onApplyProductFilter(city, store, txtStrengthStart, txtStrengthEnd, txtVolumeStart, txtVolumeEnd, txtPriceStart, txtPriceEnd);
             productAdapter.clearItems();
             filterDialog.cancel();
         });
@@ -116,7 +111,15 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         filterButton.setEnabled(true);
     }
 
-    private void showFilterDialog(){
+    //ProductAdapter on click listener
+    @Override
+    public void onClick(ProductItem item) {
+        Intent intent = new Intent(this, ProductPageActivity.class);
+        intent.putExtra(ProductItem.class.getSimpleName(), item);
+        startActivity(intent);
+    }
+
+    private void showFilterDialog() {
         filterDialog.show();
     }
 
@@ -124,17 +127,17 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         listener.getMoreProducts();
     }
 
-    private void initRecycler(){
+    private void initRecycler() {
         productListView = findViewById(R.id.tv_products);
         productListView.setLayoutManager(new LinearLayoutManager(this));
-        productAdapter = new ProductAdapter();
+        productAdapter = new ProductAdapter(this);
         productListView.setAdapter(productAdapter);
     }
 
     //OnClickHandler
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.ib_filter:
                 showFilterDialog();
         }
