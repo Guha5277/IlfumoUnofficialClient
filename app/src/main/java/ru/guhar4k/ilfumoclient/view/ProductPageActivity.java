@@ -15,7 +15,7 @@ public class ProductPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_page);
-        ProductItem productItem = (ProductItem) getIntent().getExtras().getSerializable(ProductItem.class.getSimpleName());
+        ProductItem productItem = (ProductItem) getIntent().getExtras().getParcelable(ProductItem.class.getSimpleName());
         Product product = productItem.getProduct();
         Log.i(LOGTAG, product.getName());
         Log.i(LOGTAG, String.valueOf(product.getGroup()));
