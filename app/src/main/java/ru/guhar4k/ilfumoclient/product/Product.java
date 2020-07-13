@@ -1,15 +1,18 @@
 package ru.guhar4k.ilfumoclient.product;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Product {
+public class Product implements Parcelable{
     private String name;
-    private final String URL;
+    private String URL;
     private int id;
     private int categoryID;
     private Group group;
-    private final int price;
+    private int price;
     private int volume;
     private double strength;
     private List<Warehouse> remains;
@@ -43,6 +46,18 @@ public class Product {
         this.categoryID = categoryID;
         this.volume = volume;
         this.strength = strength;
+    }
+
+    public Product(Parcel parcel){
+        name = parcel.readString();
+        URL = parcel.readString();
+        id = parcel.readInt();
+        categoryID = parcel.readInt();
+        price = parcel.readInt();
+        volume = parcel.readInt();
+        strength = parcel.readDouble();
+        parcel.readList(remains,Warehouse.class.getClassLoader());
+        imageID = parcel.readString();
     }
 
     public String getName() {
@@ -133,4 +148,35 @@ public class Product {
     public boolean equals(Object obj) {
         return obj instanceof Product && ((Product) obj).getId() == id;
     }
+
+    //parcelable
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(URL);
+        parcel.writeInt(id);
+        parcel.writeInt(categoryID);
+        parcel.writeInt(price);
+        parcel.writeInt(volume);
+        parcel.writeDouble(strength);
+        parcel.writeList(remains);
+        parcel.writeString(imageID);
+    }
+
+    public static final Parcelable.Creator<Product> CREATOR = new Parcelable.Creator<Product>(){
+        @Override
+        public Product createFromParcel(Parcel parcel) {
+            return new Product(parcel);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 }
