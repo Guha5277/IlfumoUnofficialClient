@@ -8,7 +8,7 @@ import ru.guhar4k.ilfumoclient.product.Product;
 
 class ProductItem implements Parcelable {
     static final int NOT_LOAD = 0;
-    static final int HAS_IMAGE = 1;
+    static final int HAVE_IMAGE = 1;
     static final int NO_IMAGE = 2;
 
     private final Product product;

@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import ru.guhar4k.ilfumoclient.R;
@@ -40,7 +39,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
             return;
         }
         item.setImage(image);
-        item.setImageStatus(ProductItem.HAS_IMAGE);
+        item.setImageStatus(ProductItem.HAVE_IMAGE);
         notifyItemChanged(item.getPosition());
     }
 
@@ -108,7 +107,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
             super(itemView);
 
             productImage = itemView.findViewById(R.id.product_item_image);
-            tvProductName = itemView.findViewById(R.id.tv_product_name);
+            tvProductName = itemView.findViewById(R.id.iv_name_background);
             tvPrice = itemView.findViewById(R.id.tv_product_price);
             tvVolume = itemView.findViewById(R.id.tv_volume);
             tvStrength = itemView.findViewById(R.id.tv_strength);
@@ -117,7 +116,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
         void bind(int position, ProductItem item){
             item.setPosition(position);
             int imageStatus = item.getImageStatus();
-            if (imageStatus == ProductItem.HAS_IMAGE){
+            if (imageStatus == ProductItem.HAVE_IMAGE){
                 productImage.setImageBitmap(item.getImage());
             } else if(imageStatus == ProductItem.NO_IMAGE){
                 productImage.setImageResource(R.drawable.no_image);
