@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +19,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
-import java.util.List;
-import java.util.zip.Inflater;
-
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Product;
 
-public class SearchFragment extends Fragment implements ProductAdapter.OnClickListener {
+public class SearchFragment extends Fragment implements ProductListAdapter.OnClickListener {
     private static final String LOGTAG = "SearchFragment";
     private RecyclerView productListView;
-    private ProductAdapter productAdapter;
+    private ProductListAdapter productListAdapter;
     private AlertDialog filterDialog;
     private ImageButton filterButton;
     private ViewListener listener;
@@ -75,8 +71,8 @@ public class SearchFragment extends Fragment implements ProductAdapter.OnClickLi
     private void initRecycler(View view) {
         productListView = view.findViewById(R.id.rv_products);
         productListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        productAdapter = new ProductAdapter(this);
-        productListView.setAdapter(productAdapter);
+        productListAdapter = new ProductListAdapter(this);
+        productListView.setAdapter(productListAdapter);
 
         productListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -136,7 +132,7 @@ public class SearchFragment extends Fragment implements ProductAdapter.OnClickLi
             String txtPriceEnd = etPriceEnd.getText().toString();
 
             listener.onApplyProductFilter(city, store, txtVolumeStart, txtVolumeEnd, txtStrengthStart, txtStrengthEnd, txtPriceStart, txtPriceEnd);
-            productAdapter.clearItems();
+            productListAdapter.clearItems();
             filterDialog.cancel();
         });
 
@@ -153,15 +149,15 @@ public class SearchFragment extends Fragment implements ProductAdapter.OnClickLi
     }
 
     void onProductFound(Product product){
-        productAdapter.addItem(product);
+        productListAdapter.addItem(product);
     }
 
     public void onImageFound(int productID, Bitmap image) {
-        productAdapter.addImage(productID, image);
+        productListAdapter.addImage(productID, image);
     }
 
     public void noImageForProduct(int productID) {
-        productAdapter.noImageForProduct(productID);
+        productListAdapter.noImageForProduct(productID);
     }
 
     //products list click event

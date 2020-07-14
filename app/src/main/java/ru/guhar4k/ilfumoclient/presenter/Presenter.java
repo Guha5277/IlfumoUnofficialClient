@@ -11,6 +11,7 @@ import java.util.List;
 import ru.guhar4k.ilfumoclient.model.Model;
 import ru.guhar4k.ilfumoclient.model.ModelListener;
 import ru.guhar4k.ilfumoclient.product.Product;
+import ru.guhar4k.ilfumoclient.product.Remains;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
 import ru.guhar4k.ilfumoclient.view.ViewListener;
 import ru.guhar4k.ilfumoclient.view.WarehousesProvider;
@@ -153,8 +154,27 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
         viewListener.onWarehousesInfoReceived();
     }
 
-    //WarehousesProvider events
+    @Override
+    public void getRemainsForProduct(int productID) {
+        modelListener.getRemainsForProduct(productID);
+    }
 
+    @Override
+    public Warehouse getWarehouseByID(int id){
+        for (Warehouse w : warehouses){
+            if (w.getId() == id) {
+                return w;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void onRemainsReceived(List<Remains> remains) {
+        viewListener.onRemainsReceived(remains);
+    }
+
+    //WarehousesProvider events
     @Override
     public List<String> getWarehouses(String selectedItem) {
         return citiesAndStores.get(selectedItem);

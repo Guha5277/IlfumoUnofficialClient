@@ -8,7 +8,6 @@ public interface ViewListener {
     void onAppPaused();
     void getMoreProducts();
     List<String> getCitiesList();
-
     void onApplyProductFilter(String city, String store, String volumeStart, String volumeEnd, String strengthStart, String strengthEnd, String priceStart, String priceEnd);
-//    List<String> getWarehousesList();
+    void getRemainsForProduct(int id);
 }

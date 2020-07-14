@@ -8,12 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.util.List;
 
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Product;
+import ru.guhar4k.ilfumoclient.product.Remains;
 
 public class ProductFragment extends Fragment {
+    private static RemainsListAdapter adapter = new RemainsListAdapter();
     private ProductItem productItem;
     private Product product;
     private ImageView productImage;
@@ -21,6 +27,9 @@ public class ProductFragment extends Fragment {
     private TextView tvPrice;
     private TextView tvVolume;
     private TextView tvStrength;
+    private ViewListener listener;
+    private ProgressBar progressBar;
+    private ListView lvRemains;
 
     public ProductFragment() {}
 
@@ -53,11 +62,17 @@ public class ProductFragment extends Fragment {
         tvPrice = view.findViewById(R.id.tv_price);
         tvStrength = view.findViewById(R.id.tv_strength);
         tvVolume = view.findViewById(R.id.tv_volume);
+        lvRemains = view.findViewById(R.id.lv_remains);
+        progressBar = view.findViewById(R.id.remains_progress);
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+        //adapter = new RemainsListAdapter();
+        lvRemains.setAdapter(adapter);
         initializeView();
         return view;
     }
 
     private void initializeView() {
+        listener.getRemainsForProduct(product.getId());
         if (productItem.getImageStatus() == ProductItem.HAVE_IMAGE){
             productImage.setImageBitmap(productItem.getImage());
         }
@@ -65,5 +80,20 @@ public class ProductFragment extends Fragment {
         tvPrice.setText(product.getPrice() + " ₽");
         tvVolume.setText(product.getVolume() + " мл");
         tvStrength.setText(product.getStrength() + " мг/мл");
+    }
+
+    public void setListener(ViewListener listener) {
+        this.listener = listener;
+    }
+
+    public void onRemainsReceived(List<Remains> remains) {
+        progressBar.setVisibility(ProgressBar.INVISIBLE);
+        adapter.addAll(remains);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        adapter.clear();
     }
 }

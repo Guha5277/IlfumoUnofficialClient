@@ -2,7 +2,10 @@ package ru.guhar4k.ilfumoclient.model;
 
 import android.graphics.Bitmap;
 
+import java.util.List;
+
 import ru.guhar4k.ilfumoclient.product.Product;
+import ru.guhar4k.ilfumoclient.product.Remains;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
 
 public interface ModelListener {
@@ -17,5 +20,9 @@ public interface ModelListener {
     void warehouseReceived(Warehouse warehouse);
 
     void warehouseListEnd();
+
+    Warehouse getWarehouseByID(int id);
+
+    void onRemainsReceived(List<Remains> remains);
     //void noImageForProduct(int parseInt);
 }

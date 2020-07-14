@@ -18,12 +18,12 @@ import java.util.List;
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Product;
 
-class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
-    private static final String LOGTAG = "ProductAdapter";
+class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
+    private static final String LOGTAG = "ProductListAdapter";
     private List<ProductItem> productItemList = new ArrayList<>();
     private OnClickListener listener;
 
-    ProductAdapter(OnClickListener listener){
+    ProductListAdapter(OnClickListener listener){
         this.listener = listener;
     }
 
@@ -60,11 +60,6 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
         return null;
     }
 
-//    public void setItems(Collection<Product> products) {
-//        productList.addAll(products);
-//        notifyDataSetChanged();
-//    }
-//
     public void clearItems() {
         productItemList.clear();
         notifyDataSetChanged();
@@ -74,7 +69,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutID = R.layout.product_item;
+        int layoutID = R.layout.product_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(layoutID, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
@@ -124,7 +119,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
                 productImage.setImageResource(R.drawable.image_downloading);
             }
             tvProductName.setText(item.getProduct().getName());
-            tvPrice.setText(item.getProduct().getPrice() + " р.");
+            tvPrice.setText(item.getProduct().getPrice() + " ₽");
             tvStrength.setText(item.getProduct().getStrength() + " мг/мл");
             tvVolume.setText(item.getProduct().getVolume() + " мл");
         }
