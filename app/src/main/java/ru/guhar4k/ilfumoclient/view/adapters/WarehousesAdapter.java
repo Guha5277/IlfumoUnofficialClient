@@ -1,4 +1,4 @@
-package ru.guhar4k.ilfumoclient.view;
+package ru.guhar4k.ilfumoclient.view.adapters;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
@@ -17,7 +17,7 @@ public class WarehousesAdapter extends ArrayAdapter<String> {
         this.spinner = spinner;
     }
 
-    void onParentAdapterChanged(String selectedItem){
+    public void onParentAdapterChanged(String selectedItem){
         List<String> list = listener.getWarehouses(selectedItem);
         if (list == null) {
             spinner.setEnabled(false);

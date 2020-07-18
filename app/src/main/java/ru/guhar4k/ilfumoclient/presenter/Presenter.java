@@ -14,7 +14,7 @@ import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Remains;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
 import ru.guhar4k.ilfumoclient.view.ViewListener;
-import ru.guhar4k.ilfumoclient.view.WarehousesProvider;
+import ru.guhar4k.ilfumoclient.view.adapters.WarehousesProvider;
 
 public class Presenter implements ModelListener, ViewListener, WarehousesProvider {
     private static final String LOG_TAG = "Presenter";

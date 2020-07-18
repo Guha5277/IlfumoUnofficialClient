@@ -14,6 +14,9 @@ import ru.guhar4k.ilfumoclient.presenter.Presenter;
 import ru.guhar4k.ilfumoclient.presenter.PresenterListener;
 import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Remains;
+import ru.guhar4k.ilfumoclient.view.adapters.ProductItem;
+import ru.guhar4k.ilfumoclient.view.fragments.ProductFragment;
+import ru.guhar4k.ilfumoclient.view.fragments.SearchFragment;
 
 public class MainActivity extends AppCompatActivity implements PresenterListener.View, SearchFragment.OnClickListener {
     private static final String LOGTAG = "MainActivity";

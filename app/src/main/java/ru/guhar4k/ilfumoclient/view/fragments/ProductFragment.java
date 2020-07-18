@@ -1,18 +1,15 @@
-package ru.guhar4k.ilfumoclient.view;
+package ru.guhar4k.ilfumoclient.view.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,6 +18,9 @@ import java.util.List;
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Remains;
+import ru.guhar4k.ilfumoclient.view.ViewListener;
+import ru.guhar4k.ilfumoclient.view.adapters.ProductItem;
+import ru.guhar4k.ilfumoclient.view.adapters.RemainsListAdapter;
 
 public class ProductFragment extends Fragment {
     private static RemainsListAdapter adapter = new RemainsListAdapter();

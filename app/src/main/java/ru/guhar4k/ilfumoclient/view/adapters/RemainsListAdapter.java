@@ -1,4 +1,4 @@
-package ru.guhar4k.ilfumoclient.view;
+package ru.guhar4k.ilfumoclient.view.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,16 +15,16 @@ import java.util.List;
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Remains;
 
-class RemainsListAdapter extends RecyclerView.Adapter<RemainsListAdapter.ViewHolder> {
+public class RemainsListAdapter extends RecyclerView.Adapter<RemainsListAdapter.ViewHolder> {
     private ArrayList<Remains> remainsList = new ArrayList<>();
 
-    void addAll(List<Remains> remains) {
+    public void addAll(List<Remains> remains) {
         remainsList.clear();
         remainsList.addAll(remains);
         notifyDataSetChanged();
     }
 
-    void clear() {
+    public void clear() {
         remainsList.clear();
         notifyDataSetChanged();
     }

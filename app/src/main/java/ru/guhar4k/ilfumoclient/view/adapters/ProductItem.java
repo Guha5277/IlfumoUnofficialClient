@@ -1,4 +1,4 @@
-package ru.guhar4k.ilfumoclient.view;
+package ru.guhar4k.ilfumoclient.view.adapters;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;
@@ -6,9 +6,9 @@ import android.os.Parcelable;
 
 import ru.guhar4k.ilfumoclient.product.Product;
 
-class ProductItem implements Parcelable {
+public class ProductItem implements Parcelable {
     static final int NOT_LOAD = 0;
-    static final int HAVE_IMAGE = 1;
+    public static final int HAVE_IMAGE = 1;
     static final int NO_IMAGE = 2;
 
     private final Product product;
@@ -39,7 +39,7 @@ class ProductItem implements Parcelable {
         return product;
     }
 
-    int getImageStatus() {
+    public int getImageStatus() {
         return hasImage;
     }
 

@@ -1,4 +1,4 @@
-package ru.guhar4k.ilfumoclient.view;
+package ru.guhar4k.ilfumoclient.view.adapters;
 
 import java.util.List;
 

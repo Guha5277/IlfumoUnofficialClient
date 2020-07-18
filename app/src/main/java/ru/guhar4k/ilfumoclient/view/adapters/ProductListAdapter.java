@@ -1,4 +1,4 @@
-package ru.guhar4k.ilfumoclient.view;
+package ru.guhar4k.ilfumoclient.view.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,12 +18,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Product;
 
-class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
+public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
     private static final String LOGTAG = "ProductListAdapter";
     private List<ProductItem> productItemList = new ArrayList<>();
     private OnClickListener listener;
 
-    ProductListAdapter(OnClickListener listener){
+    public ProductListAdapter(OnClickListener listener){
         this.listener = listener;
     }
 
@@ -127,7 +126,7 @@ class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHol
         }
     }
 
-    interface OnClickListener {
+    public interface OnClickListener {
         void onClick(ProductItem item);
     }
 }

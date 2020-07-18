@@ -1,4 +1,4 @@
-package ru.guhar4k.ilfumoclient.view;
+package ru.guhar4k.ilfumoclient.view.fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +22,11 @@ import android.widget.Spinner;
 
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Product;
+import ru.guhar4k.ilfumoclient.view.ViewListener;
+import ru.guhar4k.ilfumoclient.view.adapters.ProductItem;
+import ru.guhar4k.ilfumoclient.view.adapters.ProductListAdapter;
+import ru.guhar4k.ilfumoclient.view.adapters.WarehousesAdapter;
+import ru.guhar4k.ilfumoclient.view.adapters.WarehousesProvider;
 
 public class SearchFragment extends Fragment implements ProductListAdapter.OnClickListener, View.OnClickListener {
     private static final String LOGTAG = "SearchFragment";
@@ -35,7 +40,7 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
     private SearchFragment.OnClickListener clickListener;
     Spinner spinnerStore;
 
-    interface OnClickListener {
+    public interface OnClickListener {
         void onClick(ProductItem item);
     }
 
@@ -48,7 +53,7 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
         return fragment;
     }
 
-    void setListener(ViewListener listener) {
+    public void setListener(ViewListener listener) {
         this.listener = listener;
     }
 
@@ -93,14 +98,14 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
         });
     }
 
-    void initFilterDialog(Context context) {
+    public void initFilterDialog(Context context) {
         AlertDialog.Builder adb = new AlertDialog.Builder(context);
         View filterView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
         adb.setView(filterView);
         Spinner spinnerCity = filterView.findViewById(R.id.spinner_city);
         spinnerStore = filterView.findViewById(R.id.spinner_store);
 
-        ArrayAdapter<String> adapterCities = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, listener.getCitiesList());
+        ArrayAdapter<String> adapterCities = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, listener.getCitiesList());
         WarehousesAdapter storesAdapter = new WarehousesAdapter(context, android.R.layout.simple_spinner_item, (WarehousesProvider) listener, spinnerStore);
 
         adapterCities.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -148,7 +153,7 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
         filterButton.setEnabled(true);
     }
 
-    void initSortDialog(Context context) {
+    public void initSortDialog(Context context) {
         AlertDialog.Builder adb = new AlertDialog.Builder(context);
         View sortView = getLayoutInflater().inflate(R.layout.sort_dialog, null);
         adb.setView(sortView);
@@ -176,7 +181,7 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
         listener.getMoreProducts();
     }
 
-    void onProductFound(Product product) {
+    public void onProductFound(Product product) {
         productListAdapter.addItem(product);
     }
 
