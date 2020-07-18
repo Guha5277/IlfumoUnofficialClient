@@ -101,4 +101,6 @@ public class ProductFragment extends Fragment {
         super.onDestroy();
         adapter.clear();
     }
+
+
 }

@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
     @Override
     public void onClick(ProductItem item) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.fragment_in, R.anim.parent_our, R.anim.parent_in, R.anim.fragment_out);
         productFragment = ProductFragment.newInstance(item);
         productFragment.setListener(listener);
         ft.hide(searchFragment);

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Product;
 
@@ -92,7 +93,7 @@ class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHol
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView productImage;
+        CircleImageView productImage;
         TextView tvProductName;
         TextView tvPrice;
         TextView tvVolume;
@@ -115,6 +116,7 @@ class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHol
                 productImage.setImageBitmap(item.getImage());
             } else if(imageStatus == ProductItem.NO_IMAGE){
                 productImage.setImageResource(R.drawable.no_image);
+                productImage.setImageResource(R.drawable.ic_no_image);
             } else {
                 productImage.setImageResource(R.drawable.image_downloading);
             }
