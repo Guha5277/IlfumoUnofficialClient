@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="item_name_size">12sp</dimen>
-    <dimen name="item_price_size">25sp</dimen>
+    <dimen name="item_price_size">28sp</dimen>
     <dimen name="filter_label_size">16sp</dimen>
 </resources>
