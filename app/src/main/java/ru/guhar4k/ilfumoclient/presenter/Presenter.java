@@ -98,6 +98,11 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
         modelListener.newProductRequest(regionID, storeID, valVolumeStart, valVolumeEnd, valStrengthStart, valStrengthEnd, valPriceStart, valPriceEnd);
     }
 
+    @Override
+    public void onnSortRequest(int sortType) {
+        modelListener.onSortRequest(sortType);
+    }
+
     //Model events
     @Override
     public void onProductFound(Product product) {

@@ -10,6 +10,7 @@ public class ProductRequest {
     private int volumeEnd;
     private int priceStart;
     private int priceEnd;
+    private int sortType;
 
     public ProductRequest(boolean stock, int regionID, int storeID, int strengthStart, int strengthEnd, int volumeStart, int volumeEnd, int priceStart, int priceEnd) {
         this.stock = stock;
@@ -21,6 +22,11 @@ public class ProductRequest {
         this.volumeEnd = volumeEnd;
         this.priceStart = priceStart;
         this.priceEnd = priceEnd;
+    }
+
+    public ProductRequest(boolean stock, int regionID, int storeID, int strengthStart, int strengthEnd, int volumeStart, int volumeEnd, int priceStart, int priceEnd, int sortType) {
+        this(stock, regionID, storeID, strengthStart, strengthEnd, volumeStart, volumeEnd, priceStart, priceEnd);
+        this.sortType = sortType;
     }
 
     public boolean isInStock() {
@@ -57,5 +63,9 @@ public class ProductRequest {
 
     public int getPriceEnd() {
         return priceEnd;
+    }
+
+    public int getSortType(){
+        return sortType;
     }
 }

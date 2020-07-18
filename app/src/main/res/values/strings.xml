@@ -7,11 +7,17 @@
     <string name="product_item_volume">120 мл</string>
     <string name="product_item_strength_header">Крепость:</string>
     <string name="product_item_strength">3 мг/мл</string>
-    <string name="ic_filter_button">3 мг/мл</string>
+    <string name="ic_filter_button">Кнопка настроек поиска</string>
+    <string name="ic_sort_button">Кнопка настроек сортировки</string>
     <string name="range_start">от</string>
     <string name="range_end">до</string>
     <string name="price_label">Цена:</string>
     <string name="filter_button_show">Показать</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sort_dialog_header">Сортировать</string>
+    <string name="sort_dialog_sort_price">По Цене</string>
+    <string name="sort_dialog_sort_price_desc">По Цене (по убыванию)</string>
+    <string name="sort_dialog_sort_volume">По Объему</string>
+    <string name="sort_dialog_sort_volume_desc">По Объему (по убыванию)</string>
+    <string name="sort_dialog_sort_strength">По Крепости</string>
+    <string name="sort_dialog_sort_strength_desc">По Крепости (по убыванию)</string>
 </resources>

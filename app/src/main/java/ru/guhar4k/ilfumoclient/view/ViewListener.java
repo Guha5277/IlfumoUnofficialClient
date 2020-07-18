@@ -10,4 +10,5 @@ public interface ViewListener {
     List<String> getCitiesList();
     void onApplyProductFilter(String city, String store, String volumeStart, String volumeEnd, String strengthStart, String strengthEnd, String priceStart, String priceEnd);
     void getRemainsForProduct(int id);
+    void onnSortRequest(int sortType);
 }

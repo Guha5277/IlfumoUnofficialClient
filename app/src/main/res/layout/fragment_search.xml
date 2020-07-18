@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,6 +31,18 @@
                     android:contentDescription="@string/ic_filter_button"
                     android:src="@drawable/ic_filter"
                     android:tint="@android:color/white" />
+
+                <ImageButton
+                    android:id="@+id/ib_sort"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="72dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/ic_sort_button"
+                    android:src="@drawable/ic_sort"
+                    android:tint="@android:color/white" />
+
             </RelativeLayout>
         </Toolbar>
 

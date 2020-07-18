@@ -20,6 +20,8 @@ public interface PresenterListener {
         void newProductRequest(int city, int store, int volumeStart, int volumeEnd, int strengthStart, int strengthEnd, int priceStart, int priceEnd);
 
         void getRemainsForProduct(int productID);
+
+        void onSortRequest(int sortType);
     }
 
     interface View {

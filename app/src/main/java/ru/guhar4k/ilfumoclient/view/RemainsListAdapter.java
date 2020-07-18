@@ -55,9 +55,10 @@ public class RemainsListAdapter extends BaseAdapter {
         View view = convertView;
         if (view == null) view = LayoutInflater.from(parent.getContext()).inflate(R.layout.remains_item_list, parent, false);
         Remains remains = getItem(position);
+        String storeName = remains.getWarehouse().getAltName();
         TextView tvWarehouseName = view.findViewById(R.id.tv_warehouse_name);
         TextView tvRemains = view.findViewById(R.id.tv_remains);
-        tvWarehouseName.setText(remains.getWarehouse().getAltName());
+        tvWarehouseName.setText(storeName);
         tvRemains.setText(String.valueOf(remains.getRemains()));
         return view;
     }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,21 +23,25 @@ import android.widget.Spinner;
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Product;
 
-public class SearchFragment extends Fragment implements ProductListAdapter.OnClickListener {
+public class SearchFragment extends Fragment implements ProductListAdapter.OnClickListener, View.OnClickListener {
     private static final String LOGTAG = "SearchFragment";
     private RecyclerView productListView;
     private ProductListAdapter productListAdapter;
     private AlertDialog filterDialog;
+    private AlertDialog sortDialog;
     private ImageButton filterButton;
+    private ImageButton sortButton;
     private ViewListener listener;
     private SearchFragment.OnClickListener clickListener;
+    Spinner spinnerStore;
 
     interface OnClickListener {
         void onClick(ProductItem item);
     }
 
-    public SearchFragment() {}
-    // TODO: Rename and change types and number of parameters
+    public SearchFragment() {
+    }
+
     public static SearchFragment newInstance(OnClickListener clickListener) {
         SearchFragment fragment = new SearchFragment();
         fragment.setOnClickListener(clickListener);
@@ -64,7 +69,10 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
         filterButton = view.findViewById(R.id.ib_filter);
         filterButton.setEnabled(false);
         filterButton.setOnClickListener(v -> showFilterDialog());
-        // Inflate the layout for this fragment
+
+        sortButton = view.findViewById(R.id.ib_sort);
+        sortButton.setEnabled(false);
+        sortButton.setOnClickListener(v -> showSortDialog());
         return view;
     }
 
@@ -90,7 +98,7 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
         View filterView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
         adb.setView(filterView);
         Spinner spinnerCity = filterView.findViewById(R.id.spinner_city);
-        Spinner spinnerStore = filterView.findViewById(R.id.spinner_store);
+        spinnerStore = filterView.findViewById(R.id.spinner_store);
 
         ArrayAdapter<String> adapterCities = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, listener.getCitiesList());
         WarehousesAdapter storesAdapter = new WarehousesAdapter(context, android.R.layout.simple_spinner_item, (WarehousesProvider) listener, spinnerStore);
@@ -140,15 +148,35 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
         filterButton.setEnabled(true);
     }
 
+    void initSortDialog(Context context) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(context);
+        View sortView = getLayoutInflater().inflate(R.layout.sort_dialog, null);
+        adb.setView(sortView);
+
+        sortView.findViewById(R.id.rb_price).setOnClickListener(this);
+        sortView.findViewById(R.id.rb_price_desc).setOnClickListener(this);
+        sortView.findViewById(R.id.rb_volume).setOnClickListener(this);
+        sortView.findViewById(R.id.rb_volume_desc).setOnClickListener(this);
+        sortView.findViewById(R.id.rb_strength).setOnClickListener(this);
+        sortView.findViewById(R.id.rb_strength_desc).setOnClickListener(this);
+
+        sortDialog = adb.create();
+        sortButton.setEnabled(true);
+    }
+
     private void showFilterDialog() {
         filterDialog.show();
+    }
+
+    private void showSortDialog() {
+        sortDialog.show();
     }
 
     private void handleListScrolled() {
         listener.getMoreProducts();
     }
 
-    void onProductFound(Product product){
+    void onProductFound(Product product) {
         productListAdapter.addItem(product);
     }
 
@@ -164,5 +192,41 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
     @Override
     public void onClick(ProductItem item) {
         clickListener.onClick(item);
+    }
+
+    //sort RadioButtons click
+    @Override
+    public void onClick(View v) {
+        int SORT_PRICE = 2;
+        int SORT_PRICE_DESC = 3;
+        int SORT_VOLUME = 4;
+        int SORT_VOLUME_DESC = 5;
+        int SORT_STRENGTH = 6;
+        int SORT_STRENGTH_DESC = 7;
+
+        Log.i(LOGTAG, String.valueOf(v.getId()));
+
+        switch (v.getId()){
+            case R.id.rb_price:
+                listener.onnSortRequest(SORT_PRICE);
+                break;
+            case R.id.rb_price_desc:
+                listener.onnSortRequest(SORT_PRICE_DESC);
+                break;
+            case R.id.rb_volume:
+                listener.onnSortRequest(SORT_VOLUME);
+                break;
+            case R.id.rb_volume_desc:
+                listener.onnSortRequest(SORT_VOLUME_DESC);
+                break;
+            case R.id.rb_strength:
+                listener.onnSortRequest(SORT_STRENGTH);
+                break;
+            case R.id.rb_strength_desc:
+                listener.onnSortRequest(SORT_STRENGTH_DESC);
+                break;
+        }
+        productListAdapter.clearItems();
+        sortDialog.cancel();
     }
 }

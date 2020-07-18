@@ -30,6 +30,7 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
     private ExecutorService threadPool;
     private final String LOG_TAG = "Model";
     private ImageDownloader imageDownloader;
+    private int sortType;
 
     public Model(ModelListener listener) {
         this.listener = listener;
@@ -47,6 +48,7 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
     @Override
     public void onAppClosed() {
         if (socketThread != null) socketThread.close();
+        threadPool.shutdown();
     }
 
     @Override
@@ -62,13 +64,19 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
     @Override
     public void newProductRequest(int city, int store, int volumeStart, int volumeEnd, int strengthStart, int strengthEnd, int priceStart, int priceEnd) {
         threadPool.execute(() -> {
-            sendMessage(Library.productRequestToJson(new ProductRequest(true, city, store, strengthStart, strengthEnd, volumeStart, volumeEnd, priceStart, priceEnd)));
+            sendMessage(Library.productRequestToJson(new ProductRequest(true, city, store, strengthStart, strengthEnd, volumeStart, volumeEnd, priceStart, priceEnd, sortType)));
         });
     }
 
     @Override
     public void getRemainsForProduct(int productID) {
         threadPool.execute(() -> getProductRemains(productID));
+    }
+
+    @Override
+    public void onSortRequest(int sortType) {
+        this.sortType = sortType;
+        threadPool.execute(() -> sendMessage(msgOf(header(Library.PRODUCT_REQUEST, Library.SORT), String.valueOf(sortType))));
     }
 
     //socket events
@@ -105,6 +113,10 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
                 break;
             case Library.REMAINS:
                 List<Remains> remains = parseRemains(receivedData.getData());
+                Log.i(LOG_TAG, receivedData.getData());
+//                for (Remains r : remains){
+//
+//                }
                 listener.onRemainsReceived(remains);
                 break;
             case Library.WAREHOUSE_LIST:
@@ -178,6 +190,7 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
     private byte[] header(byte... header) {
         return header;
     }
+
     private void sendProductRequest() {
         socketThread.sendMessage(msgOf(header(Library.PRODUCT_REQUEST, Library.NEXT)));
     }

@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         runOnUiThread(() -> {
             searchFragment.setListener(listener);
             searchFragment.initFilterDialog(this);
+            searchFragment.initSortDialog(this);
         });
     }
 

@@ -65,7 +65,6 @@ public class ProductFragment extends Fragment {
         lvRemains = view.findViewById(R.id.lv_remains);
         progressBar = view.findViewById(R.id.remains_progress);
         progressBar.setVisibility(ProgressBar.VISIBLE);
-        //adapter = new RemainsListAdapter();
         lvRemains.setAdapter(adapter);
         initializeView();
         return view;
