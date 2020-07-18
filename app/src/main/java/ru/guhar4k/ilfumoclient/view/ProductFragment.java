@@ -1,9 +1,13 @@
 package ru.guhar4k.ilfumoclient.view;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +33,7 @@ public class ProductFragment extends Fragment {
     private TextView tvStrength;
     private ViewListener listener;
     private ProgressBar progressBar;
-    private ListView lvRemains;
+    private RecyclerView rvRemains;
 
     public ProductFragment() {}
 
@@ -56,16 +60,18 @@ public class ProductFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_product, container, false);
         productImage = view.findViewById(R.id.iv_product);
         tvName = view.findViewById(R.id.tv_name);
         tvPrice = view.findViewById(R.id.tv_price);
         tvStrength = view.findViewById(R.id.tv_strength);
         tvVolume = view.findViewById(R.id.tv_volume);
-        lvRemains = view.findViewById(R.id.lv_remains);
+        rvRemains = view.findViewById(R.id.rv_remains);
+        rvRemains.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvRemains.setAdapter(adapter);
         progressBar = view.findViewById(R.id.remains_progress);
         progressBar.setVisibility(ProgressBar.VISIBLE);
-        lvRemains.setAdapter(adapter);
         initializeView();
         return view;
     }

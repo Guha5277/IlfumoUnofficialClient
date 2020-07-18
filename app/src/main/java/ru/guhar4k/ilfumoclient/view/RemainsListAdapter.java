@@ -1,10 +1,13 @@
 package ru.guhar4k.ilfumoclient.view;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,54 +15,56 @@ import java.util.List;
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Remains;
 
-public class RemainsListAdapter extends BaseAdapter {
-    private ArrayList<Remains> remainsList;
+class RemainsListAdapter extends RecyclerView.Adapter<RemainsListAdapter.ViewHolder> {
+    private ArrayList<Remains> remainsList = new ArrayList<>();
 
-    public RemainsListAdapter() {
-        remainsList = new ArrayList<>();
-    }
-
-    void add(Remains remains){
-        remainsList.add(remains);
-        notifyDataSetChanged();
-    }
-
-    void addAll(List<Remains> remains){
+    void addAll(List<Remains> remains) {
         remainsList.clear();
         remainsList.addAll(remains);
         notifyDataSetChanged();
     }
 
-    void clear(){
+    void clear() {
         remainsList.clear();
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
-    public int getCount() {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        int layoutID = R.layout.remains_item_list;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(layoutID, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.bind(position);
+    }
+
+    @Override
+    public int getItemCount() {
         return remainsList.size();
     }
 
-    @Override
-    public Remains getItem(int position) {
-        return remainsList.get(position);
-    }
+    class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvWarehouseName;
+        TextView tvRemains;
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (view == null) view = LayoutInflater.from(parent.getContext()).inflate(R.layout.remains_item_list, parent, false);
-        Remains remains = getItem(position);
-        String storeName = remains.getWarehouse().getAltName();
-        TextView tvWarehouseName = view.findViewById(R.id.tv_warehouse_name);
-        TextView tvRemains = view.findViewById(R.id.tv_remains);
-        tvWarehouseName.setText(storeName);
-        tvRemains.setText(String.valueOf(remains.getRemains()));
-        return view;
+            tvWarehouseName = itemView.findViewById(R.id.tv_warehouse_name);
+            tvRemains = itemView.findViewById(R.id.tv_remains);
+        }
+
+        public void bind(int position) {
+            Remains remains = remainsList.get(position);
+            String storeName = remains.getWarehouse().getAltName();
+            tvWarehouseName.setText(storeName);
+            tvRemains.setText(String.valueOf(remains.getRemains()));
+        }
     }
 }
