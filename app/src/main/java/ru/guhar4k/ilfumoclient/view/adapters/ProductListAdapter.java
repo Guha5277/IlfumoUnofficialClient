@@ -69,7 +69,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutID = R.layout.product_list_item;
+        int layoutID = R.layout.product_tem_search;
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(layoutID, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
@@ -114,15 +114,14 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             if (imageStatus == ProductItem.HAVE_IMAGE){
                 productImage.setImageBitmap(item.getImage());
             } else if(imageStatus == ProductItem.NO_IMAGE){
-                productImage.setImageResource(R.drawable.no_image);
                 productImage.setImageResource(R.drawable.ic_no_image);
             } else {
                 productImage.setImageResource(R.drawable.image_downloading);
             }
             tvProductName.setText(item.getProduct().getName());
-            tvPrice.setText(item.getProduct().getPrice() + " ₽");
-            tvStrength.setText(item.getProduct().getStrength() + " мг/мл");
-            tvVolume.setText(item.getProduct().getVolume() + " мл");
+            tvPrice.setText(item.getProduct().getPrice() + R.string.rubble_sign);
+            tvStrength.setText((int) (item.getProduct().getStrength() + R.string.mg_ml));
+            tvVolume.setText(item.getProduct().getVolume() + R.string.ml);
         }
     }
 

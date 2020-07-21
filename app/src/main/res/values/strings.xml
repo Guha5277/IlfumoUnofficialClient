@@ -20,6 +20,9 @@
     <string name="sort_dialog_sort_volume_desc">По Объему (по убыванию)</string>
     <string name="sort_dialog_sort_strength">По Крепости</string>
     <string name="sort_dialog_sort_strength_desc">По Крепости (по убыванию)</string>
+    <string name="rubble_sign"> ₽</string>
+    <string name="mg_ml"> мг/мл</string>
+    <string name="ml"> мл</string>
 
 
     <string name="sample_product_description">\t\tЖидкость для электронных сигарет Ugly Butter производства американской компании.

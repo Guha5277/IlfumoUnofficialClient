@@ -209,7 +209,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="330dp"
         app:fabSize="mini"
-        android:src="@drawable/ic_baseline_add_shopping_cart_24"
+        android:src="@drawable/ic_add_to_cart"
         app:layout_anchor="@id/appBar"
         app:layout_anchorGravity="bottom|end"
         app:layout_collapseMode="parallax"
