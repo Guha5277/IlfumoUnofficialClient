@@ -44,21 +44,9 @@ public class ImageDownloader {
             Log.e(LOGTAG, "Failed to decode an image");
             return null;
         }
-
-        //write to disk
-//            FileOutputStream os = new FileOutputStream(IMAGE_PATH + productID + ".jpeg");
-//            os.write(decodedImageBytes);
-
         //Create an image instance
         Bitmap bmp = BitmapFactory.decodeByteArray(decodedImageBytes, 0, decodedImageBytes.length);
-        //Image image = new Image(new ByteArrayInputStream(decodedImageBytes));
-
-        //remove image from map
         images.remove(productID);
-
-//            os.close();
-
-//        listener.onImageDownload(productID, bmp);
         return bmp;
     }
 
@@ -66,19 +54,12 @@ public class ImageDownloader {
         int productID = Integer.parseInt(messageParts[0]);
         String chunk = messageParts[1];
         byte[] decodedImageBytes = decodeImage(chunk.getBytes());
-        //write to disk
-//            FileOutputStream os = new FileOutputStream(IMAGE_PATH + productID + ".jpeg");
-//            os.write(result);
-
         //Create an image instance
         Bitmap bmp = BitmapFactory.decodeByteArray(decodedImageBytes, 0, decodedImageBytes.length);
         //Image image = new Image(new ByteArrayInputStream(result));
 
         //remove image from map
         images.remove(productID);
-
-//            os.close();
-//        listener.onImageDownload(productID, bmp);
         return bmp;
     }
 
@@ -99,11 +80,6 @@ public class ImageDownloader {
     }
 
     private byte[] decodeImage(byte[] encodedImage) {
-        String encodedString = new String(encodedImage);
-
-        //decode result
-//        Base64.Decoder decoder = Base64.getDecoder();
-//        return decoder.decode(encodedString);
         return Base64.getDecoder().decode(encodedImage);
     }
 }

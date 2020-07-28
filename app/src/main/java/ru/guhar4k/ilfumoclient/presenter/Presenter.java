@@ -105,7 +105,7 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
 
     //Model events
     @Override
-    public void onProductFound(Product product) {
+    public void onProductReceived(Product product) {
         viewListener.onProductFound(product);
     }
 

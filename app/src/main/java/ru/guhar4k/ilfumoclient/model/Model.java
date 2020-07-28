@@ -6,13 +6,10 @@ import android.util.Log;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import ru.guhar4k.ilfumoclient.common.DataProtocol;
 import ru.guhar4k.ilfumoclient.common.Library;
 import ru.guhar4k.ilfumoclient.common.ProductRequest;
 import ru.guhar4k.ilfumoclient.network.SocketThread;
@@ -22,20 +19,20 @@ import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Remains;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
 
-public class Model implements PresenterListener.Model, SocketThreadListener {
+public class Model implements PresenterListener.Model, SocketThreadListener, MessageHandlerListener {
     private ModelListener listener;
+    private MessageHandlerImpl messageHandler;
     private String ip = "109.111.178.130";
     private int port = 5277;
     private SocketThread socketThread;
     private ExecutorService threadPool;
     private final String LOG_TAG = "Model";
-    private ImageDownloader imageDownloader;
     private int sortType;
 
     public Model(ModelListener listener) {
         this.listener = listener;
-        imageDownloader = new ImageDownloader();
         threadPool = Executors.newFixedThreadPool(2, Thread::new);
+        messageHandler = new MessageHandler(this);
     }
 
     //Presenter events
@@ -97,79 +94,11 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
 
     @Override
     public void onReceiveString(SocketThread thread, Socket socket, String msg) {
-        handleMsg(thread, msg);
+        handleMsg(msg);
     }
 
-    private void handleMsg(SocketThread thread, String msg) {
-        DataProtocol receivedData = Library.jsonToObject(msg);
-
-        byte[] header = receivedData.getHeader();
-        switch (header[0]) {
-            case Library.PRODUCT_REQUEST:
-                if (header[1] == Library.EMPTY) {
-                    Log.w(LOG_TAG, "No products found by user request");
-                    //listener.onProductsNotFound();
-                }
-                break;
-            case Library.REMAINS:
-                List<Remains> remains = parseRemains(receivedData.getData());
-                Log.i(LOG_TAG, receivedData.getData());
-//                for (Remains r : remains){
-//
-//                }
-                listener.onRemainsReceived(remains);
-                break;
-            case Library.WAREHOUSE_LIST:
-                listener.warehouseReceived(Library.warehouseFromJson(receivedData.getData()));
-                break;
-
-            case Library.WAREHOUSE_LIST_END:
-                listener.warehouseListEnd();
-
-                break;
-            case Library.PRODUCT_LIST:
-                //products.add(Library.productFromJson(receivedData.getData()));
-                Product product = Library.productFromJson(receivedData.getData());
-                listener.onProductFound(product);
-                getImage(product.getId());
-                break;
-            case Library.PRODUCT_LIST_END:
-                boolean hasNextPage = Boolean.parseBoolean(receivedData.getData());
-                listener.availableProducts(hasNextPage);
-                break;
-            case Library.IMAGE:
-                if (header.length > 1) {
-                    switch (header[1]) {
-                        case Library.EXCEPTION:
-                            Log.e(LOG_TAG, "Failed to get image from the server. Product id: " + receivedData.getData());
-                            break;
-                        case Library.NO_IMAGE:
-                            //noImageForProduct(receivedData.getData());
-                            listener.noImageForProduct(Integer.parseInt(receivedData.getData()));
-                            break;
-                        case Library.FIRST_CHUNK:
-                            imageDownloader.storeImageFirstChunk(receivedData.getData().split(Library.DELIMITER));
-                            break;
-                        case Library.TRANSIT_CHUNK:
-                            /*TODO Check Map for contains an imageView*/ //if (!images.containsKey(Integer.valueOf(messageParts[0])));
-                            imageDownloader.storeImageTransitChunk(receivedData.getData().split(Library.DELIMITER));
-                            break;
-                        case Library.LAST_CHUNK:
-                            String[] messageParts = receivedData.getData().split(Library.DELIMITER);
-                            Bitmap image = imageDownloader.storeImageLastChunk(messageParts);
-                            int productID = Integer.parseInt(messageParts[0]);
-                            listener.onImageDownload(productID, image);
-                            break;
-                        case Library.FULL:
-                            String[] messageParts2 = receivedData.getData().split(Library.DELIMITER);
-                            Bitmap image2 = imageDownloader.storeFullImage(messageParts2);
-                            int productID2 = Integer.parseInt(messageParts2[0]);
-                            listener.onImageDownload(productID2, image2);
-                            break;
-                    }
-                }
-                break;
-        }
+    private void handleMsg(String msg) {
+        messageHandler.handleMessage(msg);
     }
 
     @Override
@@ -242,5 +171,48 @@ public class Model implements PresenterListener.Model, SocketThreadListener {
             remains.add(new Remains(productID, warehouse, Integer.parseInt(arr[1])));
         }
         return remains;
+    }
+
+    //Message Handler
+    @Override
+    public void noResultForProductRequest() {
+        //TODO
+    }
+
+    @Override
+    public void onProductReceived(Product product) {
+        listener.onProductReceived(product);
+        getImage(product.getId());
+    }
+
+    @Override
+    public void productListPageChanged(boolean hasNextPage) {
+        listener.availableProducts(hasNextPage);
+    }
+
+    @Override
+    public void onRemainsReceived(String remains) {
+        List<Remains> remainsList = parseRemains(remains);
+        listener.onRemainsReceived(remainsList);
+    }
+
+    @Override
+    public void onWarehousesReceived(Warehouse warehouse) {
+        listener.warehouseReceived(warehouse);
+    }
+
+    @Override
+    public void onWarehousesListEnd() {
+        listener.warehouseListEnd();
+    }
+
+    @Override
+    public void noImageForProduct(int productID) {
+        listener.noImageForProduct(productID);
+    }
+
+    @Override
+    public void onImageDownload(int productID, Bitmap image) {
+        listener.onImageDownload(productID, image);
     }
 }

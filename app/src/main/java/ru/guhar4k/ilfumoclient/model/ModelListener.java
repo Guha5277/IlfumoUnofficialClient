@@ -9,7 +9,7 @@ import ru.guhar4k.ilfumoclient.product.Remains;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
 
 public interface ModelListener {
-    void onProductFound(Product product);
+    void onProductReceived(Product product);
 
     void onImageDownload(int productID, Bitmap image);
 
