@@ -19,10 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
+            app:contentScrim="@color/colorPrimaryDark"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="28dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            <!--            app:contentScrim="?attr/colorPrimary"-->
 
             <ImageView
                 android:id="@+id/iv_product"
