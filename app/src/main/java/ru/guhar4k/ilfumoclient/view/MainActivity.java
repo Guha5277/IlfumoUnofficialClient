@@ -3,9 +3,13 @@ package ru.guhar4k.ilfumoclient.view;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.bottomappbar.BottomAppBar;
 
 import java.util.List;
 
@@ -18,7 +22,7 @@ import ru.guhar4k.ilfumoclient.view.adapters.ProductItem;
 import ru.guhar4k.ilfumoclient.view.fragments.ProductFragment;
 import ru.guhar4k.ilfumoclient.view.fragments.SearchFragment;
 
-public class MainActivity extends AppCompatActivity implements PresenterListener.View, SearchFragment.OnClickListener {
+public class MainActivity extends AppCompatActivity implements PresenterListener.View, SearchFragment.OnClickListener, View.OnClickListener {
     private static final String LOGTAG = "MainActivity";
     private ViewListener listener;
     private SearchFragment searchFragment;
@@ -32,10 +36,18 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         searchFragment = SearchFragment.newInstance(this);
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, searchFragment).commit();
 
+        //TODO extract to method
+//        ImageView ibHome = findViewById(R.id.ib_home);
+//        ibHome.setOnClickListener(this);
+//        ImageView ibSearch = findViewById(R.id.ib_search);
+//        ibSearch.setOnClickListener(this);
+//        ImageView ibFav = findViewById(R.id.ib_favorite);
+//        ibFav.setOnClickListener(this);
+
         listener = new Presenter(this);
     }
 
-    //Listener for SearchFragment listener
+    //Listener for SearchFragment
     @Override
     public void onClick(ProductItem item) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -46,6 +58,22 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         ft.add(R.id.fl_content, productFragment);
         ft.addToBackStack(null);
         ft.commit();
+    }
+
+    //Listener for bottom menu click
+    @Override
+    public void onClick(View v) {
+//        switch (v.getId()){
+//            case R.id.ib_home:
+//                Log.i(LOGTAG, "IB HOME");
+//                break;
+//            case R.id.ib_search:
+//                Log.i(LOGTAG, "IB SEARCH");
+//                break;
+//            case R.id.ib_favorite:
+//                Log.i(LOGTAG, "IB FAV");
+//                break;
+//        }
     }
 
     //Presenter events
@@ -100,4 +128,6 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         listener.onAppClosed();
         Log.i(LOGTAG, "Destroy");
     }
+
+
 }
