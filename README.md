@@ -1,5 +1,5 @@
 # ParserAndroidClient
-Клиентская часть [OpenCartParser](https://github.com/Guha5277/OpenCartParser) выполненной на платформе Android
+Клиентская часть [OpenCartParser](https://github.com/Guha5277/OpenCartParser) выполненная на платформе Android
 
 ## Структура проекта
 Проект выполнен на базе архитектуры MVP
