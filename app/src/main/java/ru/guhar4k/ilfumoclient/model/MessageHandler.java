@@ -1,19 +1,26 @@
 package ru.guhar4k.ilfumoclient.model;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.gson.JsonSyntaxException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import ru.guhar4k.ilfumoclient.common.DataProtocol;
 import ru.guhar4k.ilfumoclient.common.Library;
+import ru.guhar4k.ilfumoclient.product.DailyOffer;
 import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
 
 public class MessageHandler implements MessageHandlerImpl {
+    private static final String LOGTAG = "MessageHandler";
     private MessageHandlerListener listener;
     private ImageDownloader imageDownloader;
     private final int PRODUCT_REQUEST_HEADER_LENGTH = 2;
     private final int IMAGE_HEADER_LENGTH = 2;
+    private final int DAILY_OFFER_CATEGORY_END = 2;
     private final int PRODUCT_ID = 0;
 
     public MessageHandler(MessageHandlerListener listener) {
@@ -44,6 +51,9 @@ public class MessageHandler implements MessageHandlerImpl {
             case Library.PRODUCT_LIST_END:
                 handleProductListEnd(message);
                 break;
+            case Library.DAILY_OFFER:
+                handleDailyOfferReceived(header, message);
+                break;
             case Library.REMAINS:
                 handleRemains(message);
                 break;
@@ -54,8 +64,27 @@ public class MessageHandler implements MessageHandlerImpl {
                 handleWarehousesListEnd();
                 break;
             case Library.IMAGE:
+                Log.i(LOGTAG, "Image received...");
                 handleImage(header, message);
                 break;
+        }
+    }
+
+    private void handleDailyOfferReceived(byte[] header, String message) {
+        if (header.length == DAILY_OFFER_CATEGORY_END && header[1] == Library.PRODUCT_LIST_END) {
+            listener.onDailyOfferCategoryReceived(message);
+            return;
+        }
+
+        DailyOffer offer;
+
+        try {
+            offer = Library.dailyOfferFromJson(message);
+            Log.i(LOGTAG, offer.getName());
+            listener.onDailyOfferReceived(offer);
+        } catch (JsonSyntaxException e){
+            //TODO handle exception
+            e.printStackTrace();
         }
     }
 
@@ -113,6 +142,7 @@ public class MessageHandler implements MessageHandlerImpl {
     private void handleImage(byte[] header, String message) {
         if (header.length != IMAGE_HEADER_LENGTH) {
             //TODO handle wrong server response
+            Log.e(LOGTAG, "WRONG IMAGE HEADER LENGTH");
             return;
         }
         switch (header[1]) {
@@ -120,6 +150,7 @@ public class MessageHandler implements MessageHandlerImpl {
                 //TODO handle exception from server
                 break;
             case Library.NO_IMAGE:
+                Log.i(LOGTAG, "No image for product " + message);
                 listener.noImageForProduct(Integer.parseInt(message));
                 break;
             case Library.FIRST_CHUNK:
@@ -129,9 +160,11 @@ public class MessageHandler implements MessageHandlerImpl {
                 imageDownloader.storeImageTransitChunk(message.split(Library.DELIMITER));
                 break;
             case Library.LAST_CHUNK:
+                Log.i(LOGTAG, "Image completely make from parts");
                 handleImageLastChunk(message);
                 break;
             case Library.FULL:
+                Log.i(LOGTAG, "Received full image");
                 handleFullImage(message);
                 break;
         }

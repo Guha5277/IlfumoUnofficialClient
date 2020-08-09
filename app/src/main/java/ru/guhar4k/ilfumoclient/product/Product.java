@@ -1,5 +1,6 @@
 package ru.guhar4k.ilfumoclient.product;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,6 +18,8 @@ public class Product implements Parcelable{
     private double strength;
     private List<Warehouse> remains;
     private String imageID;
+    private Bitmap image;
+    private boolean hasNoImage;
 
     public Product(String name, String URL, int price) {
         this.name = name;
@@ -179,4 +182,20 @@ public class Product implements Parcelable{
             return new Product[size];
         }
     };
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    public void setNoImage() {
+        hasNoImage = true;
+    }
+
+    public boolean isImageSet(){
+        return image != null || hasNoImage;
+    }
 }

@@ -15,6 +15,7 @@ import ru.guhar4k.ilfumoclient.common.ProductRequest;
 import ru.guhar4k.ilfumoclient.network.SocketThread;
 import ru.guhar4k.ilfumoclient.network.SocketThreadListener;
 import ru.guhar4k.ilfumoclient.presenter.PresenterListener;
+import ru.guhar4k.ilfumoclient.product.DailyOffer;
 import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Remains;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
@@ -74,6 +75,19 @@ public class Model implements PresenterListener.Model, SocketThreadListener, Mes
     public void onSortRequest(int sortType) {
         this.sortType = sortType;
         threadPool.execute(() -> sendMessage(msgOf(header(Library.PRODUCT_REQUEST, Library.SORT), String.valueOf(sortType))));
+    }
+
+    @Override
+    public void isHomePageReady() {
+                String msg = "{\n" +
+                "  \"header\": [\n" +
+                "    30,\n" +
+                "    45\n" +
+                "  ],\n" +
+                "  \"dataLength\": 176,\n" +
+                "  \"data\": \"{\\n  \\\"stock\\\": true,\\n  \\\"regionID\\\": -1,\\n  \\\"storeID\\\": -1,\\n  \\\"strengthStart\\\": -1,\\n  \\\"strengthEnd\\\": -1,\\n  \\\"volumeStart\\\": -1,\\n  \\\"volumeEnd\\\": -1,\\n  \\\"priceStart\\\": -1,\\n  \\\"priceEnd\\\": -1\\n}\"\n" +
+                "} ";
+        socketThread.sendMessage(msg);
     }
 
     //socket events
@@ -139,15 +153,7 @@ public class Model implements PresenterListener.Model, SocketThreadListener, Mes
     }
 
     private void sendNewProductRequest() {
-        String msg = "{\n" +
-                "  \"header\": [\n" +
-                "    30,\n" +
-                "    45\n" +
-                "  ],\n" +
-                "  \"dataLength\": 176,\n" +
-                "  \"data\": \"{\\n  \\\"stock\\\": true,\\n  \\\"regionID\\\": -1,\\n  \\\"storeID\\\": -1,\\n  \\\"strengthStart\\\": -1,\\n  \\\"strengthEnd\\\": -1,\\n  \\\"volumeStart\\\": -1,\\n  \\\"volumeEnd\\\": -1,\\n  \\\"priceStart\\\": -1,\\n  \\\"priceEnd\\\": -1\\n}\"\n" +
-                "} ";
-        socketThread.sendMessage(msg);
+        sendMessage(msgOf(header(Library.PRODUCT_REQUEST, Library.DAILY_OFFER)));
     }
 
     void sendMessage(String msg) {
@@ -214,5 +220,16 @@ public class Model implements PresenterListener.Model, SocketThreadListener, Mes
     @Override
     public void onImageDownload(int productID, Bitmap image) {
         listener.onImageDownload(productID, image);
+    }
+
+    @Override
+    public void onDailyOfferReceived(DailyOffer dailyOffer) {
+        listener.onDailyOfferReceived(dailyOffer);
+        getImage(dailyOffer.getProductsList().get(0).getId());
+    }
+
+    @Override
+    public void onDailyOfferCategoryReceived(String offerName) {
+        listener.onDailyOfferCategoryReceived(offerName);
     }
 }

@@ -17,14 +17,15 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Product;
+import ru.guhar4k.ilfumoclient.view.ProductItemSelected;
 
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
     private static final String LOGTAG = "ProductListAdapter";
     private List<ProductItem> productItemList = new ArrayList<>();
-    private OnClickListener listener;
+    private ProductItemSelected listener;
     private Context context;
 
-    public ProductListAdapter(OnClickListener listener) {
+    public ProductListAdapter(ProductItemSelected listener) {
         this.listener = listener;
     }
 
@@ -127,9 +128,5 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             tvStrength.setText(strength);
             tvVolume.setText(volume);
         }
-    }
-
-    public interface OnClickListener {
-        void onClick(ProductItem item);
     }
 }

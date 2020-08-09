@@ -3,6 +3,8 @@ package ru.guhar4k.ilfumoclient.presenter;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,6 +12,7 @@ import java.util.List;
 
 import ru.guhar4k.ilfumoclient.model.Model;
 import ru.guhar4k.ilfumoclient.model.ModelListener;
+import ru.guhar4k.ilfumoclient.product.DailyOffer;
 import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Remains;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
@@ -17,15 +20,17 @@ import ru.guhar4k.ilfumoclient.view.ViewListener;
 import ru.guhar4k.ilfumoclient.view.adapters.WarehousesProvider;
 
 public class Presenter implements ModelListener, ViewListener, WarehousesProvider {
-    private static final String LOG_TAG = "Presenter";
+    private static final String LOGTAG = "Presenter";
     PresenterListener.View viewListener;
     PresenterListener.Model modelListener;
 
     private boolean isAllProductsLoaded;
     private boolean readyToGetProduct;
+    private boolean isAllDailyOffersReady;
     private List<Warehouse> warehouses = new ArrayList<>();
     private List<String> cities = new ArrayList<>();
     private HashMap<String, List<String>> citiesAndStores = new HashMap<>();
+    private HashMap<String, DailyOffer> dailyOfferContent = new HashMap<>();
 
     public Presenter(PresenterListener.View listener) {
         viewListener = listener;
@@ -103,6 +108,21 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
         modelListener.onSortRequest(sortType);
     }
 
+    @Override
+    public void onHomeClicked(Fragment fragment) {
+        viewListener.onHomeClicked(fragment);
+    }
+
+    @Override
+    public void onSearchClicked(Fragment fragment) {
+        viewListener.onSearchClicked(fragment);
+    }
+
+    @Override
+    public void onFavoriteClicked(Fragment fragment) {
+        viewListener.onFavoriteClicked(fragment);
+    }
+
     //Model events
     @Override
     public void onProductReceived(Product product) {
@@ -111,12 +131,61 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
 
     @Override
     public void onImageDownload(int productID, Bitmap image) {
-        viewListener.onProductImageDownload(productID, image);
+        if (isAllDailyOffersReady){
+            viewListener.onProductImageDownload(productID, image);
+        } else {
+            boolean result = false;
+            DailyOffer dailyOffer = null;
+
+            for (HashMap.Entry<String, DailyOffer> mapEntry : dailyOfferContent.entrySet()){
+                dailyOffer = mapEntry.getValue();
+                if (dailyOffer.containsProduct(productID)){
+                    result = dailyOffer.addImage(productID, image);
+                    break;
+                }
+            }
+
+            if (dailyOffer != null && dailyOffer.isReady()) sendDailyOfferToView(dailyOffer);
+
+            if (!result){
+                viewListener.onProductImageDownload(productID, image);
+            }
+        }
     }
 
     @Override
     public void noImageForProduct(int productID) {
-        viewListener.noImageForProduct(productID);
+        Log.i(LOGTAG, "No image for product");
+        if (isAllDailyOffersReady){
+            viewListener.noImageForProduct(productID);
+        } else {
+            boolean result = false;
+            DailyOffer dailyOffer = null;
+
+            for (HashMap.Entry<String, DailyOffer> mapEntry : dailyOfferContent.entrySet()){
+                dailyOffer = mapEntry.getValue();
+                if (dailyOffer.containsProduct(productID)){
+                    result = dailyOffer.addNoImageMarker(productID);
+                    break;
+                }
+            }
+
+            if (dailyOffer != null && dailyOffer.isReady()) sendDailyOfferToView(dailyOffer);
+
+            if (!result){
+                viewListener.noImageForProduct(productID);
+            }
+        }
+        //viewListener.noImageForProduct(productID);
+    }
+
+    private void sendDailyOfferToView(DailyOffer dailyOffer) {
+        viewListener.addDailyOffer(dailyOffer);
+        Log.i(LOGTAG, "Daily offer sent to view: " + dailyOffer.getName());
+        dailyOfferContent.remove(dailyOffer.getName());
+        isAllDailyOffersReady = dailyOfferContent.size() == 0;
+        if (isAllDailyOffersReady) modelListener.isHomePageReady();
+        Log.i(LOGTAG, "Daily offer content size " + dailyOfferContent.size());
     }
 
     @Override
@@ -126,7 +195,7 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
 
     @Override
     public void warehouseListEnd() {
-        Log.i(LOG_TAG,"Received warehouses list");
+        Log.i(LOGTAG,"Received warehouses list");
         ArrayList<Warehouse> list = new ArrayList<>(warehouses);
         int index = 0;
 
@@ -177,6 +246,39 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
     @Override
     public void onRemainsReceived(List<Remains> remains) {
         viewListener.onRemainsReceived(remains);
+    }
+
+    @Override
+    public void onDailyOfferReceived(DailyOffer dailyOffer) {
+        //viewListener.onDailyOfferReceived(dailyOffer);
+        String name = dailyOffer.getName();
+        if (dailyOfferContent.containsKey(name)){
+            dailyOfferContent.get(name).addProduct(dailyOffer.getProductsList().get(0));
+        } else {
+            dailyOfferContent.put(name, dailyOffer);
+        }
+    }
+
+    @Override
+    public void onDailyOfferCategoryReceived(String offerName) {
+        //viewListener.onDailyOfferCategoryReceived(offerName);
+        if (!dailyOfferContent.containsKey(offerName)){
+            //TODO generate some error
+            return;
+        }
+
+        DailyOffer dailyOffer = dailyOfferContent.get(offerName);
+
+        Log.i(LOGTAG, "Daily offer with name " + offerName + " complete received. Offer size is: " + dailyOffer.getProductsList().size());
+
+        dailyOffer.setAllProductReceived(true);
+
+        if (dailyOffer.isReady()){
+            sendDailyOfferToView(dailyOffer);
+        }
+
+        //List<Product> productList = dailyOfferContent.get(offerName);
+        //listener.addDailyOffer(offerName, productList);
     }
 
     //WarehousesProvider events

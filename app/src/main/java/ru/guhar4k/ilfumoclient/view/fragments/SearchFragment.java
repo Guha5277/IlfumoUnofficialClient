@@ -3,12 +3,6 @@ package ru.guhar4k.ilfumoclient.view.fragments;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,17 +12,23 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.product.Product;
+import ru.guhar4k.ilfumoclient.view.ProductItemSelected;
 import ru.guhar4k.ilfumoclient.view.ViewListener;
-import ru.guhar4k.ilfumoclient.view.adapters.ProductItem;
 import ru.guhar4k.ilfumoclient.view.adapters.ProductListAdapter;
 import ru.guhar4k.ilfumoclient.view.adapters.WarehousesAdapter;
 import ru.guhar4k.ilfumoclient.view.adapters.WarehousesProvider;
 
-public class SearchFragment extends Fragment implements ProductListAdapter.OnClickListener, View.OnClickListener {
+public class SearchFragment extends Fragment implements View.OnClickListener {
     private static final String LOGTAG = "SearchFragment";
     private RecyclerView productListView;
     private ProductListAdapter productListAdapter;
@@ -37,17 +37,16 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
     private ImageButton filterButton;
     private ImageButton sortButton;
     private ViewListener listener;
-    private SearchFragment.OnClickListener clickListener;
-    Spinner spinnerStore;
-
-    public interface OnClickListener {
-        void onClick(ProductItem item);
-    }
+    private RadioButtonsListener radioButtonsListener;
+    private ProductItemSelected clickListener;
+    private Spinner spinnerStore;
+    private LayoutInflater layoutInflater;
 
     public SearchFragment() {
+        radioButtonsListener = new RadioButtonsListener();
     }
 
-    public static SearchFragment newInstance(OnClickListener clickListener) {
+    public static SearchFragment newInstance(ProductItemSelected clickListener) {
         SearchFragment fragment = new SearchFragment();
         fragment.setOnClickListener(clickListener);
         return fragment;
@@ -57,34 +56,34 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
         this.listener = listener;
     }
 
-    private void setOnClickListener(OnClickListener clickListener) {
+    private void setOnClickListener(ProductItemSelected clickListener) {
         this.clickListener = clickListener;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(LOGTAG, "On Create");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOGTAG, "On Create View");
+        this.layoutInflater = inflater;
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        initRecycler(view);
-        filterButton = view.findViewById(R.id.ib_filter);
-        filterButton.setEnabled(false);
-        filterButton.setOnClickListener(v -> showFilterDialog());
 
-        sortButton = view.findViewById(R.id.ib_sort);
-        sortButton.setEnabled(false);
-        sortButton.setOnClickListener(v -> showSortDialog());
+        initRecycler(view);
+        initTopAppBar(view);
+        initBottomBar(view);
+
         return view;
     }
 
     private void initRecycler(View view) {
         productListView = view.findViewById(R.id.rv_products);
         productListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        productListAdapter = new ProductListAdapter(this);
+        productListAdapter = new ProductListAdapter(clickListener);
         productListView.setAdapter(productListAdapter);
 
         productListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -98,9 +97,25 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
         });
     }
 
+    private void initTopAppBar(View view){
+        filterButton = view.findViewById(R.id.ib_filter);
+        filterButton.setEnabled(false);
+        filterButton.setOnClickListener(v -> showFilterDialog());
+
+        sortButton = view.findViewById(R.id.ib_sort);
+        sortButton.setEnabled(false);
+        sortButton.setOnClickListener(v -> showSortDialog());
+    }
+
+    private void initBottomBar(View view){
+        view.findViewById(R.id.ib_home).setOnClickListener(this);
+        view.findViewById(R.id.ib_search).setOnClickListener(this);
+        view.findViewById(R.id.ib_favorite).setOnClickListener(this);
+    }
+
     public void initFilterDialog(Context context) {
         AlertDialog.Builder adb = new AlertDialog.Builder(context);
-        View filterView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
+        View filterView = layoutInflater.inflate(R.layout.filter_dialog, null);
         adb.setView(filterView);
         Spinner spinnerCity = filterView.findViewById(R.id.spinner_city);
         spinnerStore = filterView.findViewById(R.id.spinner_store);
@@ -155,15 +170,15 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
 
     public void initSortDialog(Context context) {
         AlertDialog.Builder adb = new AlertDialog.Builder(context);
-        View sortView = getLayoutInflater().inflate(R.layout.sort_dialog, null);
+        View sortView = layoutInflater.inflate(R.layout.sort_dialog, null);
         adb.setView(sortView);
 
-        sortView.findViewById(R.id.rb_price).setOnClickListener(this);
-        sortView.findViewById(R.id.rb_price_desc).setOnClickListener(this);
-        sortView.findViewById(R.id.rb_volume).setOnClickListener(this);
-        sortView.findViewById(R.id.rb_volume_desc).setOnClickListener(this);
-        sortView.findViewById(R.id.rb_strength).setOnClickListener(this);
-        sortView.findViewById(R.id.rb_strength_desc).setOnClickListener(this);
+        sortView.findViewById(R.id.rb_price).setOnClickListener(radioButtonsListener);
+        sortView.findViewById(R.id.rb_price_desc).setOnClickListener(radioButtonsListener);
+        sortView.findViewById(R.id.rb_volume).setOnClickListener(radioButtonsListener);
+        sortView.findViewById(R.id.rb_volume_desc).setOnClickListener(radioButtonsListener);
+        sortView.findViewById(R.id.rb_strength).setOnClickListener(radioButtonsListener);
+        sortView.findViewById(R.id.rb_strength_desc).setOnClickListener(radioButtonsListener);
 
         sortDialog = adb.create();
         sortButton.setEnabled(true);
@@ -183,6 +198,8 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
 
     public void onProductFound(Product product) {
         productListAdapter.addItem(product);
+        ProgressBar progressBar = getView().findViewById(R.id.pb_search_fragment);
+        progressBar.setVisibility(ProgressBar.INVISIBLE);
     }
 
     public void onImageFound(int productID, Bitmap image) {
@@ -193,45 +210,58 @@ public class SearchFragment extends Fragment implements ProductListAdapter.OnCli
         productListAdapter.noImageForProduct(productID);
     }
 
-    //products list click event
-    @Override
-    public void onClick(ProductItem item) {
-        clickListener.onClick(item);
-    }
-
-    //sort RadioButtons click
+    //bottom appBar click listener
     @Override
     public void onClick(View v) {
-        int SORT_PRICE = 2;
-        int SORT_PRICE_DESC = 3;
-        int SORT_VOLUME = 4;
-        int SORT_VOLUME_DESC = 5;
-        int SORT_STRENGTH = 6;
-        int SORT_STRENGTH_DESC = 7;
-
-        Log.i(LOGTAG, String.valueOf(v.getId()));
-
         switch (v.getId()){
-            case R.id.rb_price:
-                listener.onnSortRequest(SORT_PRICE);
+            case R.id.ib_home:
+                Log.i(LOGTAG, "HOME");
+                listener.onHomeClicked(this);
                 break;
-            case R.id.rb_price_desc:
-                listener.onnSortRequest(SORT_PRICE_DESC);
+            case R.id.ib_search:
+                Log.i(LOGTAG, "SEARCH");
+                productListView.smoothScrollToPosition(0);
                 break;
-            case R.id.rb_volume:
-                listener.onnSortRequest(SORT_VOLUME);
-                break;
-            case R.id.rb_volume_desc:
-                listener.onnSortRequest(SORT_VOLUME_DESC);
-                break;
-            case R.id.rb_strength:
-                listener.onnSortRequest(SORT_STRENGTH);
-                break;
-            case R.id.rb_strength_desc:
-                listener.onnSortRequest(SORT_STRENGTH_DESC);
+            case R.id.ib_favorite:
+                Log.i(LOGTAG, "FAVORITE");
+                listener.onFavoriteClicked(this);
                 break;
         }
-        productListAdapter.clearItems();
-        sortDialog.cancel();
+    }
+
+    //sort RadioButtons click listener
+    class RadioButtonsListener implements View.OnClickListener {
+        private static final int SORT_PRICE = 2;
+        private static final int SORT_PRICE_DESC = 3;
+        private static final int SORT_VOLUME = 4;
+        private static final int SORT_VOLUME_DESC = 5;
+        private static final int SORT_STRENGTH = 6;
+        private static final int SORT_STRENGTH_DESC = 7;
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.rb_price:
+                    listener.onnSortRequest(SORT_PRICE);
+                    break;
+                case R.id.rb_price_desc:
+                    listener.onnSortRequest(SORT_PRICE_DESC);
+                    break;
+                case R.id.rb_volume:
+                    listener.onnSortRequest(SORT_VOLUME);
+                    break;
+                case R.id.rb_volume_desc:
+                    listener.onnSortRequest(SORT_VOLUME_DESC);
+                    break;
+                case R.id.rb_strength:
+                    listener.onnSortRequest(SORT_STRENGTH);
+                    break;
+                case R.id.rb_strength_desc:
+                    listener.onnSortRequest(SORT_STRENGTH_DESC);
+                    break;
+            }
+            productListAdapter.clearItems();
+            sortDialog.cancel();
+        }
     }
 }

@@ -7,6 +7,7 @@
     tools:context=".view.fragments.SearchFragment">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -17,15 +18,13 @@
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            >
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_products"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-                />
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
@@ -36,29 +35,30 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_scrollFlags="scroll|enterAlways">
+
                     <ImageButton
                         android:id="@+id/ib_filter"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:background="@android:color/transparent"
-                        android:contentDescription="@string/ic_filter_button"
-                        android:src="@drawable/ic_filter"
-                        android:tint="@android:color/white"
                         android:layout_gravity="end"
                         android:layout_marginEnd="10dp"
-                        android:scaleType="centerCrop"/>
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/ic_filter_button"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_filter"
+                        android:tint="@android:color/white" />
 
                     <ImageButton
                         android:id="@+id/ib_sort"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:background="@android:color/transparent"
-                        android:contentDescription="@string/ic_sort_button"
-                        android:src="@drawable/ic_sort"
-                        android:tint="@android:color/white"
                         android:layout_gravity="end"
                         android:layout_marginEnd="10dp"
-                        android:scaleType="centerCrop"/>
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/ic_sort_button"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_sort"
+                        android:tint="@android:color/white" />
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
 
@@ -66,10 +66,10 @@
                 android:id="@+id/bottomAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_gravity="bottom"
                 android:layout_marginStart="0dp"
                 android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
                 app:backgroundTint="#100000"
-                android:layout_gravity="bottom"
                 app:hideOnScroll="true"
                 app:layout_scrollFlags="scroll|enterAlways">
 
@@ -87,6 +87,7 @@
                     android:layout_height="50dp"
                     android:backgroundTint="#100000"
                     android:scaleType="fitCenter"
+                    android:tint="@color/colorSelected"
                     app:srcCompat="@drawable/ic_search" />
 
                 <ImageButton
@@ -97,7 +98,19 @@
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_fav" />
             </com.google.android.material.bottomappbar.BottomAppBar>
+
+
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_search_fragment"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

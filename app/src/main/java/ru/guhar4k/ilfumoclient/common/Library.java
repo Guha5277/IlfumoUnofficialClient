@@ -2,6 +2,8 @@ package ru.guhar4k.ilfumoclient.common;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import ru.guhar4k.ilfumoclient.product.DailyOffer;
 import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Warehouse;
 
@@ -60,6 +62,7 @@ public class Library {
     public static final byte NEXT = 46;
     public static final byte REMAINS = 47;
     public static final byte SORT = 48;
+    public static final byte DAILY_OFFER = 49;
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -128,5 +131,15 @@ public class Library {
 
     public static Product productFromJson(String data){
         return GSON.fromJson(data, Product.class);
+    }
+
+    public static String dailyOfferToJson(DailyOffer dailyOffer){
+        String data = GSON.toJson(dailyOffer);
+        DataProtocol message = new DataProtocol(new byte[]{PRODUCT_LIST}, data);
+        return GSON.toJson(message);
+    }
+
+    public static DailyOffer dailyOfferFromJson(String data){
+        return GSON.fromJson(data, DailyOffer.class);
     }
 }

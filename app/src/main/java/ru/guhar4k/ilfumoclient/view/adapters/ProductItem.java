@@ -9,14 +9,14 @@ import ru.guhar4k.ilfumoclient.product.Product;
 public class ProductItem implements Parcelable {
     static final int NOT_LOAD = 0;
     public static final int HAVE_IMAGE = 1;
-    static final int NO_IMAGE = 2;
+    public static final int NO_IMAGE = 2;
 
     private final Product product;
     private int position;
     private int hasImage;
     private Bitmap image;
 
-    ProductItem(Product product){
+    public ProductItem(Product product){
         this.product = product;
     }
 
@@ -51,7 +51,7 @@ public class ProductItem implements Parcelable {
         this.image = image;
     }
 
-    void setImageStatus(int status) {
+    public void setImageStatus(int status) {
         hasImage = status;
     }
 

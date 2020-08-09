@@ -4,57 +4,66 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.google.android.material.bottomappbar.BottomAppBar;
 
 import java.util.List;
 
 import ru.guhar4k.ilfumoclient.R;
 import ru.guhar4k.ilfumoclient.presenter.Presenter;
 import ru.guhar4k.ilfumoclient.presenter.PresenterListener;
+import ru.guhar4k.ilfumoclient.product.DailyOffer;
 import ru.guhar4k.ilfumoclient.product.Product;
 import ru.guhar4k.ilfumoclient.product.Remains;
 import ru.guhar4k.ilfumoclient.view.adapters.ProductItem;
+import ru.guhar4k.ilfumoclient.view.fragments.HomeFragment;
 import ru.guhar4k.ilfumoclient.view.fragments.ProductFragment;
 import ru.guhar4k.ilfumoclient.view.fragments.SearchFragment;
 
-public class MainActivity extends AppCompatActivity implements PresenterListener.View, SearchFragment.OnClickListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements PresenterListener.View, ProductItemSelected, View.OnClickListener {
     private static final String LOGTAG = "MainActivity";
     private ViewListener listener;
     private SearchFragment searchFragment;
     private ProductFragment productFragment;
+    private HomeFragment homeFragment;
+    private HomeFragment favoriteFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        searchFragment = SearchFragment.newInstance(this);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, searchFragment).commit();
-
-        //TODO extract to method
-//        ImageView ibHome = findViewById(R.id.ib_home);
-//        ibHome.setOnClickListener(this);
-//        ImageView ibSearch = findViewById(R.id.ib_search);
-//        ibSearch.setOnClickListener(this);
-//        ImageView ibFav = findViewById(R.id.ib_favorite);
-//        ibFav.setOnClickListener(this);
 
         listener = new Presenter(this);
+
+        homeFragment = new HomeFragment(listener, this);
+        searchFragment = SearchFragment.newInstance(this);
+        searchFragment.setListener(listener);
+
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fl_content, searchFragment);
+        ft.hide(searchFragment);
+        ft.add(R.id.fl_content, homeFragment);
+        ft.addToBackStack(null);
+        ft.commit();
+
+        Log.i(LOGTAG, "ON CREATE");
     }
 
-    //Listener for SearchFragment
+    //ProductItemSelected listener
     @Override
     public void onClick(ProductItem item) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_in, R.anim.parent_our, R.anim.parent_in, R.anim.fragment_out);
         productFragment = ProductFragment.newInstance(item);
         productFragment.setListener(listener);
+        //lastAddedFragment = productFragment;
         ft.hide(searchFragment);
+        ft.hide(homeFragment);
+        //ft.hide(favoriteFragment);
         ft.add(R.id.fl_content, productFragment);
         ft.addToBackStack(null);
         ft.commit();
@@ -108,9 +117,60 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         });
     }
 
+    @Override
+    public void onHomeClicked(Fragment fragment) {
+        Log.i(LOGTAG, "On home clicked");
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        ft.setCustomAnimations(R.anim.in_left_to_right, R.anim.out_left_to_right, R.anim.in_right_to_left, R.anim.out_right_to_left);
+
+        ft.hide(fragment);
+        if (homeFragment != null && homeFragment.isAdded()){
+            ft.show(homeFragment);
+        } else {
+            ft.add(R.id.fl_content, homeFragment);
+//            ft.replace(R.id.fl_content, homeFragment);
+        }
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+    @Override
+    public void onSearchClicked(Fragment fragment) {
+        Log.i(LOGTAG, "On search clicked");
+        //getSupportFragmentManager().findFragmentById(R.id.fl_content);
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        if (fragment == favoriteFragment){
+//            ft.setCustomAnimations(R.anim.in_left_to_right, R.anim.out_left_to_right, R.anim.in_right_to_left, R.anim.out_right_to_left);
+//        } else {
+//            ft.setCustomAnimations(R.anim.in_right_to_left, R.anim.out_right_to_left, R.anim.in_left_to_right, R.anim.out_left_to_right);
+//        }
+
+        ft.hide(fragment);
+        if (homeFragment != null && searchFragment.isAdded()){
+            ft.show(searchFragment);
+        } else {
+            ft.add(R.id.fl_content, searchFragment);
+//            ft.replace(R.id.fl_content, searchFragment);
+        }
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+    @Override
+    public void onFavoriteClicked(Fragment fragment) {
+
+    }
+
+    @Override
+    public void addDailyOffer(DailyOffer dailyOffer) {
+        runOnUiThread(() -> homeFragment.addDailyOffer(dailyOffer));
+    }
+
     //Lifecycle
     @Override
     protected void onStart() {
+        Log.i(LOGTAG, "ON START");
         super.onStart();
         listener.onAppReady();
     }
