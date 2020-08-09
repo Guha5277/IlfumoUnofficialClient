@@ -3,6 +3,7 @@ package ru.guhar4k.ilfumoclient.product;
 import android.graphics.Bitmap;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class DailyOffer {
     private final String name;
@@ -33,42 +34,31 @@ public class DailyOffer {
     }
 
     public boolean containsProduct(int productID){
-        for (Product p : products){
-            if (p.getId() == productID) return true;
-        }
-        return false;
+        return products.stream().anyMatch(p -> p.getId() == productID);
     }
 
     public boolean addImage(int productID, Bitmap image){
-        for (Product p : products){
-            if (p.getId() == productID) {
-                p.setImage(image);
-                checkForAllImagesDownload();
-                return true;
-            }
-        }
-        return false;
+        Optional<Product> product = products.stream().filter(p -> p.getId() == productID).findFirst();
+        product.ifPresent(p -> {
+            p.setImage(image);
+            checkForAllImagesDownload();
+        });
+
+        return product.isPresent();
     }
 
     public boolean addNoImageMarker(int productID){
-        for (Product p : products){
-            if (p.getId() == productID) {
-                p.setNoImage();
-                checkForAllImagesDownload();
-                return true;
-            }
-        }
-        return false;
+        Optional<Product> product = products.stream().filter(p -> p.getId() == productID).findFirst();
+        product.ifPresent(p -> {
+            p.setNoImage();
+            checkForAllImagesDownload();
+        });
+
+        return product.isPresent();
     }
 
     public void checkForAllImagesDownload(){
-        for (Product p : products){
-            if (!p.isImageSet()) {
-                isAllImageReady = false;
-                return;
-            }
-        }
-        isAllImageReady = true;
+        isAllImageReady = products.stream().allMatch(Product::isImageSet);
     }
 
 
