@@ -22,7 +22,7 @@ import ru.guhar4k.ilfumoclient.view.fragments.HomeFragment;
 import ru.guhar4k.ilfumoclient.view.fragments.ProductFragment;
 import ru.guhar4k.ilfumoclient.view.fragments.SearchFragment;
 
-public class MainActivity extends AppCompatActivity implements PresenterListener.View, ProductItemSelected, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements PresenterListener.View, ProductItemSelected{
     private static final String LOGTAG = "MainActivity";
     private ViewListener listener;
     private SearchFragment searchFragment;
@@ -35,13 +35,11 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         listener = new Presenter(this);
 
         homeFragment = new HomeFragment(listener, this);
         searchFragment = SearchFragment.newInstance(this);
         searchFragment.setListener(listener);
-
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fl_content, searchFragment);
@@ -67,22 +65,6 @@ public class MainActivity extends AppCompatActivity implements PresenterListener
         ft.add(R.id.fl_content, productFragment);
         ft.addToBackStack(null);
         ft.commit();
-    }
-
-    //Listener for bottom menu click
-    @Override
-    public void onClick(View v) {
-//        switch (v.getId()){
-//            case R.id.ib_home:
-//                Log.i(LOGTAG, "IB HOME");
-//                break;
-//            case R.id.ib_search:
-//                Log.i(LOGTAG, "IB SEARCH");
-//                break;
-//            case R.id.ib_favorite:
-//                Log.i(LOGTAG, "IB FAV");
-//                break;
-//        }
     }
 
     //Presenter events
