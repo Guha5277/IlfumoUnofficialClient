@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import ru.guhar4k.ilfumoclient.model.Model;
 import ru.guhar4k.ilfumoclient.model.ModelListener;
@@ -55,7 +56,7 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
 
     @Override
     public void getMoreProducts() {
-        if (readyToGetProduct && !isAllProductsLoaded){
+        if (readyToGetProduct && !isAllProductsLoaded) {
             readyToGetProduct = false;
             modelListener.getMoreProducts();
         }
@@ -81,26 +82,22 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
         int valPriceStart = priceStart.equals("") ? -1 : Integer.parseInt(priceStart);
         int valPriceEnd = priceEnd.equals("") ? -1 : Integer.parseInt(priceEnd);
 
-        int regionID = -1;
-        int storeID = -1;
+        final int[] regionID = {-1};
+        final int[] storeID = {-1};
 
         if (city != null) {
-            for (Warehouse w : warehouses) {
-                if (w.getCity().equals(city)) {
-                    regionID = w.getRegion();
-                    break;
-                }
-            }
+            warehouses.stream()
+                    .filter(w -> w.getCity().equals(city))
+                    .findFirst()
+                    .ifPresent(w -> regionID[0] = w.getRegion());
         }
         if (store != null) {
-            for (Warehouse w : warehouses) {
-                if (w.getAddress().equals(store)) {
-                    storeID = w.getId();
-                    break;
-                }
-            }
+            warehouses.stream()
+                    .filter(w -> w.getAddress().equals(store))
+                    .findFirst()
+                    .ifPresent(w -> storeID[0] = w.getId());
         }
-        modelListener.newProductRequest(regionID, storeID, valVolumeStart, valVolumeEnd, valStrengthStart, valStrengthEnd, valPriceStart, valPriceEnd);
+        modelListener.newProductRequest(regionID[0], storeID[0], valVolumeStart, valVolumeEnd, valStrengthStart, valStrengthEnd, valPriceStart, valPriceEnd);
     }
 
     @Override
@@ -131,52 +128,37 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
 
     @Override
     public void onImageDownload(int productID, Bitmap image) {
-        if (isAllDailyOffersReady){
+        if (isAllDailyOffersReady) {
             viewListener.onProductImageDownload(productID, image);
         } else {
-            boolean result = false;
-            DailyOffer dailyOffer = null;
-
-            for (HashMap.Entry<String, DailyOffer> mapEntry : dailyOfferContent.entrySet()){
-                dailyOffer = mapEntry.getValue();
-                if (dailyOffer.containsProduct(productID)){
-                    result = dailyOffer.addImage(productID, image);
-                    break;
-                }
-            }
-
-            if (dailyOffer != null && dailyOffer.isReady()) sendDailyOfferToView(dailyOffer);
-
-            if (!result){
-                viewListener.onProductImageDownload(productID, image);
-            }
+            Optional<DailyOffer> foundOffer = dailyOfferContent.values().stream().filter(offer -> offer.containsProduct(productID)).findFirst();
+            foundOffer.ifPresent(dailyOffer -> {
+                boolean isImageAdded = dailyOffer.addImage(productID, image);
+                if (!isImageAdded) viewListener.onProductImageDownload(productID, image);
+                if (dailyOffer.isReady()) sendDailyOfferToView(dailyOffer);
+            });
         }
     }
 
     @Override
     public void noImageForProduct(int productID) {
         Log.i(LOGTAG, "No image for product");
-        if (isAllDailyOffersReady){
+        if (isAllDailyOffersReady) {
             viewListener.noImageForProduct(productID);
         } else {
-            boolean result = false;
-            DailyOffer dailyOffer = null;
+            Optional<DailyOffer> first = dailyOfferContent.values().stream()
+                    .filter(d -> d.containsProduct(productID))
+                    .findFirst();
 
-            for (HashMap.Entry<String, DailyOffer> mapEntry : dailyOfferContent.entrySet()){
-                dailyOffer = mapEntry.getValue();
-                if (dailyOffer.containsProduct(productID)){
-                    result = dailyOffer.addNoImageMarker(productID);
-                    break;
-                }
-            }
+            first.ifPresent(d -> {
+                d.addNoImageMarker(productID);
+                if (d.isReady()) sendDailyOfferToView(d);
+            });
 
-            if (dailyOffer != null && dailyOffer.isReady()) sendDailyOfferToView(dailyOffer);
 
-            if (!result){
-                viewListener.noImageForProduct(productID);
-            }
+            if (!first.isPresent()) viewListener.noImageForProduct(productID);
+
         }
-        //viewListener.noImageForProduct(productID);
     }
 
     private void sendDailyOfferToView(DailyOffer dailyOffer) {
@@ -195,7 +177,7 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
 
     @Override
     public void warehouseListEnd() {
-        Log.i(LOGTAG,"Received warehouses list");
+        Log.i(LOGTAG, "Received warehouses list");
         ArrayList<Warehouse> list = new ArrayList<>(warehouses);
         int index = 0;
 
@@ -234,8 +216,8 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
     }
 
     @Override
-    public Warehouse getWarehouseByID(int id){
-        for (Warehouse w : warehouses){
+    public Warehouse getWarehouseByID(int id) {
+        for (Warehouse w : warehouses) {
             if (w.getId() == id) {
                 return w;
             }
@@ -252,7 +234,7 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
     public void onDailyOfferReceived(DailyOffer dailyOffer) {
         //viewListener.onDailyOfferReceived(dailyOffer);
         String name = dailyOffer.getName();
-        if (dailyOfferContent.containsKey(name)){
+        if (dailyOfferContent.containsKey(name)) {
             dailyOfferContent.get(name).addProduct(dailyOffer.getProductsList().get(0));
         } else {
             dailyOfferContent.put(name, dailyOffer);
@@ -261,8 +243,7 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
 
     @Override
     public void onDailyOfferCategoryReceived(String offerName) {
-        //viewListener.onDailyOfferCategoryReceived(offerName);
-        if (!dailyOfferContent.containsKey(offerName)){
+        if (!dailyOfferContent.containsKey(offerName)) {
             //TODO generate some error
             return;
         }
@@ -273,12 +254,9 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
 
         dailyOffer.setAllProductReceived(true);
 
-        if (dailyOffer.isReady()){
+        if (dailyOffer.isReady()) {
             sendDailyOfferToView(dailyOffer);
         }
-
-        //List<Product> productList = dailyOfferContent.get(offerName);
-        //listener.addDailyOffer(offerName, productList);
     }
 
     //WarehousesProvider events
