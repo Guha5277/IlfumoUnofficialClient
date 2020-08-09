@@ -24,6 +24,7 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
     private static final String LOGTAG = "Presenter";
     PresenterListener.View viewListener;
     PresenterListener.Model modelListener;
+    private final String EMPTY_STRING = "";
 
     private boolean isAllProductsLoaded;
     private boolean readyToGetProduct;
@@ -75,29 +76,39 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
 
     @Override
     public void onApplyProductFilter(String city, String store, String volumeStart, String volumeEnd, String strengthStart, String strengthEnd, String priceStart, String priceEnd) {
-        int valStrengthStart = strengthStart.equals("") ? -1 : Integer.parseInt(strengthStart);
-        int valStrengthEnd = strengthEnd.equals("") ? -1 : Integer.parseInt(strengthEnd);
-        int valVolumeStart = volumeStart.equals("") ? -1 : Integer.parseInt(volumeStart);
-        int valVolumeEnd = volumeEnd.equals("") ? -1 : Integer.parseInt(volumeEnd);
-        int valPriceStart = priceStart.equals("") ? -1 : Integer.parseInt(priceStart);
-        int valPriceEnd = priceEnd.equals("") ? -1 : Integer.parseInt(priceEnd);
+        int valStrengthStart = strengthStart.equals(EMPTY_STRING) ? -1 : Integer.parseInt(strengthStart);
+        int valStrengthEnd = strengthEnd.equals(EMPTY_STRING) ? -1 : Integer.parseInt(strengthEnd);
+        int valVolumeStart = volumeStart.equals(EMPTY_STRING) ? -1 : Integer.parseInt(volumeStart);
+        int valVolumeEnd = volumeEnd.equals(EMPTY_STRING) ? -1 : Integer.parseInt(volumeEnd);
+        int valPriceStart = priceStart.equals(EMPTY_STRING) ? -1 : Integer.parseInt(priceStart);
+        int valPriceEnd = priceEnd.equals(EMPTY_STRING) ? -1 : Integer.parseInt(priceEnd);
 
-        final int[] regionID = {-1};
-        final int[] storeID = {-1};
+        int regionID = -1;
+        int storeID = -1;
 
         if (city != null) {
-            warehouses.stream()
-                    .filter(w -> w.getCity().equals(city))
-                    .findFirst()
-                    .ifPresent(w -> regionID[0] = w.getRegion());
+            Warehouse wRegion = findWarehouseByCity(city);
+            if (wRegion != null) regionID = wRegion.getRegion();
         }
         if (store != null) {
-            warehouses.stream()
-                    .filter(w -> w.getAddress().equals(store))
-                    .findFirst()
-                    .ifPresent(w -> storeID[0] = w.getId());
+            Warehouse wStore = findWarehouseByStore(store);
+            if (wStore != null) storeID = wStore.getId();
         }
-        modelListener.newProductRequest(regionID[0], storeID[0], valVolumeStart, valVolumeEnd, valStrengthStart, valStrengthEnd, valPriceStart, valPriceEnd);
+        modelListener.newProductRequest(regionID, storeID, valVolumeStart, valVolumeEnd, valStrengthStart, valStrengthEnd, valPriceStart, valPriceEnd);
+    }
+
+    private Warehouse findWarehouseByCity(String city){
+        Optional<Warehouse> warehouse = warehouses.stream()
+                .filter(w -> w.getCity().equals(city))
+                .findFirst();
+        return warehouse.orElse(null);
+    }
+
+    private Warehouse findWarehouseByStore(String store){
+        Optional<Warehouse> warehouse = warehouses.stream()
+                .filter(w -> w.getAddress().equals(store))
+                .findFirst();
+        return warehouse.orElse(null);
     }
 
     @Override
@@ -154,7 +165,6 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
                 d.addNoImageMarker(productID);
                 if (d.isReady()) sendDailyOfferToView(d);
             });
-
 
             if (!first.isPresent()) viewListener.noImageForProduct(productID);
 
@@ -232,7 +242,6 @@ public class Presenter implements ModelListener, ViewListener, WarehousesProvide
 
     @Override
     public void onDailyOfferReceived(DailyOffer dailyOffer) {
-        //viewListener.onDailyOfferReceived(dailyOffer);
         String name = dailyOffer.getName();
         if (dailyOfferContent.containsKey(name)) {
             dailyOfferContent.get(name).addProduct(dailyOffer.getProductsList().get(0));
